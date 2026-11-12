@@ -1,0 +1,23 @@
+@import "tailwindcss";
+/* Semua warna ada di sini. Ganti --color-peach untuk mengubah aksen di seluruh situs. */
+@theme {
+  --color-page: #eef3f8;
+  --color-card: #fbfcfe;
+  --color-edge: #c3d1e3;
+  --color-navy: #1b2f4b;
+  --color-steel: #2f5d8c;
+  --color-mist: #dce6f1;
+  --color-peach: #e9a66b;
+  --color-cream: #f1e6d6;
+  --color-body: #3f5069;
+  --color-onnavy: #c3d0e0;
+}
+@theme inline {
+  --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+  --font-display: var(--font-space), var(--font-inter), ui-sans-serif, sans-serif;
+}
+body { background: var(--color-page); color: var(--color-body); }
+:focus-visible { outline: 2px solid var(--color-steel); box-shadow: 0 0 0 5px var(--color-peach); }
+html { scroll-behavior: smooth; }
+@media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
+.label { font-size: 14px; letter-spacing: 0.14em; text-transform: uppercase; font-weight: 600; }
