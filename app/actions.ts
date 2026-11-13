@@ -50,14 +50,27 @@ export async function addSkill(fd: FormData) {
 export async function addProject(fd: FormData) {
   await guard();
   const image = await uploadImage(fd);
-  await sql`INSERT INTO projects (title, description, tech, kind, year, url, repo, image_url)
-    VALUES (${f(fd,"title")}, ${f(fd,"description")}, ${f(fd,"tech")}, ${f(fd,"kind")}, ${f(fd,"year")}, ${fix(f(fd,"url"))}, ${fix(f(fd,"repo"))}, ${image})`;
+  const order = Math.max(0, parseInt(f(fd, "sort_order"), 10) || 0);
+  await sql`INSERT INTO projects (title, description, tech, kind, year, url, repo, image_url, sort_order)
+    VALUES (${f(fd,"title")}, ${f(fd,"description")}, ${f(fd,"tech")}, ${f(fd,"kind")}, ${f(fd,"year")}, ${fix(f(fd,"url"))}, ${fix(f(fd,"repo"))}, ${image}, ${order})`;
+  done();
+}
+
+export async function updateProject(fd: FormData) {
+  await guard();
+  const image = await uploadImage(fd);
+  const remove = f(fd, "remove_image") === "1";
+  const order = Math.max(0, parseInt(f(fd, "sort_order"), 10) || 0);
+  await sql`UPDATE projects SET title=${f(fd,"title")}, description=${f(fd,"description")}, tech=${f(fd,"tech")},
+    kind=${f(fd,"kind")}, year=${f(fd,"year")}, url=${fix(f(fd,"url"))}, repo=${fix(f(fd,"repo"))}, sort_order=${order},
+    image_url = CASE WHEN ${image}::text <> '' THEN ${image}::text WHEN ${remove}::boolean THEN '' ELSE image_url END
+    WHERE id=${Number(f(fd,"id"))}`;
   done();
 }
 export async function addExperience(fd: FormData) {
   await guard();
   await sql`INSERT INTO experiences (role, company, start_date, end_date, description)
-    VALUES (${f(fd,"role")}, ${f(fd,"company")}, ${f(fd,"start_date")}, ${f(fd,"end_date") || "Sekarang"}, ${f(fd,"description")})`;
+    VALUES (${f(fd,"role")}, ${f(fd,"company")}, ${f(fd,"start_date")}, ${f(fd,"end_date") || "Present"}, ${f(fd,"description")})`;
   done();
 }
 export async function addHighlight(fd: FormData) {
@@ -72,20 +85,10 @@ export async function updateSkill(fd: FormData) {
   await sql`UPDATE skills SET name=${f(fd,"name")} WHERE id=${Number(f(fd,"id"))}`;
   done();
 }
-export async function updateProject(fd: FormData) {
-  await guard();
-  const image = await uploadImage(fd);
-  const remove = f(fd, "remove_image") === "1";
-  await sql`UPDATE projects SET title=${f(fd,"title")}, description=${f(fd,"description")}, tech=${f(fd,"tech")},
-    kind=${f(fd,"kind")}, year=${f(fd,"year")}, url=${fix(f(fd,"url"))}, repo=${fix(f(fd,"repo"))},
-    image_url = CASE WHEN ${image}::text <> '' THEN ${image}::text WHEN ${remove}::boolean THEN '' ELSE image_url END
-    WHERE id=${Number(f(fd,"id"))}`;
-  done();
-}
 export async function updateExperience(fd: FormData) {
   await guard();
   await sql`UPDATE experiences SET role=${f(fd,"role")}, company=${f(fd,"company")}, start_date=${f(fd,"start_date")},
-    end_date=${f(fd,"end_date") || "Sekarang"}, description=${f(fd,"description")}
+    end_date=${f(fd,"end_date") || "Present"}, description=${f(fd,"description")}
     WHERE id=${Number(f(fd,"id"))}`;
   done();
 }

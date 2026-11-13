@@ -76,7 +76,7 @@ export default async function Admin() {
   const [prof, skills, projects, exps, hl] = await Promise.all([
     sql`SELECT * FROM profile WHERE id=1`,
     sql`SELECT * FROM skills ORDER BY id`,
-    sql`SELECT * FROM projects ORDER BY id DESC`,
+    sql`SELECT * FROM projects ORDER BY (sort_order = 0), sort_order, id DESC`,
     sql`SELECT * FROM experiences ORDER BY id DESC`,
     sql`SELECT * FROM highlights ORDER BY id`,
   ]);
@@ -126,12 +126,13 @@ export default async function Admin() {
             <Field name="year" label="Tahun" />
             <Field name="url" label="Link studi kasus" />
             <Field name="repo" label="Link GitHub projek, mis. https://github.com/username/nama-repo (opsional)" span />
+            <Field name="sort_order" label="Urutan tampil (1 = paling awal; kosongkan agar otomatis)" />
             <ImageField />
             <div className="md:col-span-2"><button className={btn}>Tambah projek</button></div>
           </form>
           <ul>
-            {projects.map((x: any) => (
-              <Item key={x.id} table="projects" id={x.id} title={x.title} action={updateProject}>
+            {projects.map((x: any, i: number) => (
+              <Item key={x.id} table="projects" id={x.id} title={`${i + 1}. ${x.title}`} action={updateProject}>
                 <Field name="title" label="Nama projek" value={x.title} span />
                 <Field name="description" label="Deskripsi" value={x.description} area span />
                 <Field name="tech" label="Teknologi" value={x.tech} />
@@ -139,6 +140,7 @@ export default async function Admin() {
                 <Field name="year" label="Tahun" value={x.year} />
                 <Field name="url" label="Link studi kasus" value={x.url} />
                 <Field name="repo" label="Link GitHub projek" value={x.repo} span />
+                <Field name="sort_order" label="Urutan tampil (1 = paling awal; 0 atau kosong = otomatis)" value={x.sort_order ? String(x.sort_order) : ""} />
                 <ImageField current={x.image_url} />
               </Item>
             ))}

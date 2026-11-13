@@ -4,5 +4,5 @@ const inter = Inter({ subsets: ["latin"], variable: "--font-inter" });
 const space = Space_Grotesk({ subsets: ["latin"], variable: "--font-space" });
 export const metadata = { title: "Portofolio", description: "Portofolio pribadi" };
 export default function RootLayout({ children }: { children: React.ReactNode }) {
-  return (<html lang="id" className={`${inter.variable} ${space.variable}`}><body className="font-sans antialiased">{children}</body></html>);
+  return (<html lang="en" className={`${inter.variable} ${space.variable}`}><body className="font-sans antialiased">{children}</body></html>);
 }
