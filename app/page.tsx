@@ -1,4 +1,5 @@
 import { sql } from "@/lib/db";
+import Image from "next/image";
 export const dynamic = "force-dynamic";
 
 const wrap = "mx-auto w-full max-w-[1200px] px-6";
@@ -70,10 +71,16 @@ export default async function Home() {
 
   return (
     <>
-      <div className="bg-navy">
-        <header className={`${wrap} flex items-center justify-between py-5`}>
+            <header className="sticky top-0 z-50 border-b border-white/10 bg-navy">
+        <div className={`${wrap} flex items-center justify-between py-4`}>
           <a href="#top" className="flex min-h-11 items-center gap-3 text-white">
-            <span className="flex h-9 w-9 items-center justify-center rounded-lg bg-peach font-display text-lg font-bold text-navy">{String(p.name).charAt(0)}</span>
+          <Image
+            src="/fotoselwin.jpeg"
+            alt=""
+            width={80}
+            height={80}
+            className="h-10 w-10 rounded-full object-cover"
+          />
             <span className="font-display text-xl font-semibold">{p.name}</span>
           </a>
           <nav className="hidden items-center gap-2 md:flex">
@@ -87,7 +94,10 @@ export default async function Home() {
               {hasContact && <a href="#kontak" className={`${peachBtn} mt-2`}>Hubungi saya</a>}
             </div>
           </details>
-        </header>
+        </div>
+      </header>
+
+      <div className="bg-navy">
 
         <section id="top" className={`${wrap} grid scroll-mt-4 items-center gap-12 pb-20 pt-10 md:grid-cols-2 md:gap-16 md:pb-28 md:pt-16`}>
           <div>
@@ -101,7 +111,16 @@ export default async function Home() {
               {hasContact && <a href="#kontak" className={ghostBtn}>Ayo ngobrol</a>}
             </div>
           </div>
-          <MockDashboard />
+            <div className="overflow-hidden rounded-3xl border border-white/15 bg-white/[0.06] p-2 md:p-3">
+            <Image
+              src="/fotoselwin.jpeg"
+              alt="Contoh dashboard analitik hasil kerja saya"
+              width={1600}
+              height={1000}
+              priority
+              className="h-auto w-full rounded-2xl"
+            />
+          </div>
         </section>
       </div>
 
@@ -126,14 +145,36 @@ export default async function Home() {
                 const meta = [String(x.tech).split(",").map((t) => t.trim()).filter(Boolean).join(", "), x.kind, x.year].filter(Boolean).join(" · ");
                 return (
                   <article key={x.id} className="flex flex-col overflow-hidden rounded-3xl border border-edge bg-card">
-                    <Art i={i} />
+                    {x.image_url ? (
+                      // eslint-disable-next-line @next/next/no-img-element
+                      <img src={x.image_url} alt={`Tampilan projek ${x.title}`} loading="lazy" className="h-48 w-full object-cover" />
+                    ) : (
+                      <Art i={i} />
+                    )}
                     <div className="flex flex-1 flex-col p-6">
                       {meta && <p className="text-sm font-medium text-steel">{meta}</p>}
                       <h3 className="mt-2 font-display text-2xl font-semibold leading-tight tracking-tight text-navy">{x.title}</h3>
                       {x.description && <p className="mt-3 leading-relaxed">{x.description}</p>}
-                      <div className="mt-auto flex flex-wrap gap-x-5 pt-4">
-                        {x.url && <a href={x.url} className="inline-flex min-h-11 items-center font-semibold text-steel hover:underline">Lihat studi kasus →</a>}
-                        {x.repo && <a href={x.repo} className="inline-flex min-h-11 items-center font-semibold text-steel hover:underline">Lihat kode →</a>}
+                                            <div className="mt-auto flex items-center justify-between gap-4 pt-4">
+                        {x.url ? (
+                          <a href={x.url} className="inline-flex min-h-11 items-center font-semibold text-steel hover:underline">Lihat studi kasus →</a>
+                        ) : (
+                          <span />
+                        )}
+                        {x.repo && (
+                          <a
+                            href={x.repo}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            aria-label={`Kode ${x.title} di GitHub`}
+                            className="inline-flex min-h-11 items-center gap-2 rounded-full border border-edge px-4 text-sm font-semibold text-navy transition-colors hover:border-navy hover:bg-navy hover:text-white"
+                          >
+                            <svg viewBox="0 0 16 16" width="18" height="18" fill="currentColor" aria-hidden="true">
+                              <path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z" />
+                            </svg>
+                            GitHub
+                          </a>
+                        )}
                       </div>
                     </div>
                   </article>
