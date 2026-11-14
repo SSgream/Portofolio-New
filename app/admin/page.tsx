@@ -148,14 +148,16 @@ export default async function Admin() {
         </Card>
 
         <Card title="Keahlian" hint="Tampil sebagai chip di strip biru, urut sesuai waktu ditambahkan.">
-          <form action={addSkill} className="mb-5 flex gap-3">
-            <input name="name" required aria-label="Nama keahlian" placeholder="Mis. Tableau" className={inp} />
+          <form action={addSkill} className="mb-5 grid gap-3 md:grid-cols-[1fr_1fr_auto]">
+            <input name="name" required aria-label="Nama keahlian" placeholder="Mis. PostgreSQL" className={inp} />
+            <input name="category" aria-label="Kategori" placeholder="Kategori, mis. Databases" className={inp} />
             <button className={btn}>Tambah</button>
           </form>
           <ul>
             {skills.map((s: any) => (
-              <Item key={s.id} table="skills" id={s.id} title={s.name} action={updateSkill}>
-                <Field name="name" label="Nama keahlian" value={s.name} span />
+              <Item key={s.id} table="skills" id={s.id} title={`${s.name} · ${s.category}`} action={updateSkill}>
+                <Field name="name" label="Nama keahlian" value={s.name} />
+                <Field name="category" label="Kategori" value={s.category} />
               </Item>
             ))}
           </ul>

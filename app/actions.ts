@@ -44,7 +44,7 @@ export async function saveProfile(fd: FormData) {
 /* ---------- Tambah ---------- */
 export async function addSkill(fd: FormData) {
   await guard();
-  await sql`INSERT INTO skills (name, category) VALUES (${f(fd,"name")}, 'Keahlian')`;
+  await sql`INSERT INTO skills (name, category) VALUES (${f(fd,"name")}, ${f(fd,"category") || "Other"})`;
   done();
 }
 export async function addProject(fd: FormData) {
@@ -82,7 +82,7 @@ export async function addHighlight(fd: FormData) {
 /* ---------- Edit ---------- */
 export async function updateSkill(fd: FormData) {
   await guard();
-  await sql`UPDATE skills SET name=${f(fd,"name")} WHERE id=${Number(f(fd,"id"))}`;
+  await sql`UPDATE skills SET name=${f(fd,"name")}, category=${f(fd,"category") || "Other"} WHERE id=${Number(f(fd,"id"))}`;
   done();
 }
 export async function updateExperience(fd: FormData) {

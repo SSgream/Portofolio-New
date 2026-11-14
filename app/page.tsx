@@ -131,6 +131,15 @@ export default async function Home() {
   const at = p.headline_accent
     ? String(p.headline).indexOf(p.headline_accent)
     : -1;
+  const skillGroups: [string, any[]][] = [];
+  skills.forEach((s: any) => {
+    const cat = ["", "Keahlian", "Umum"].includes(s.category) ? "Other" : s.category;
+    const g = skillGroups.find(([c]) => c === cat);
+    if (g) g[1].push(s);
+    else skillGroups.push([cat, [s]]);
+  });
+  skillGroups.sort((a, b) => Number(a[0] === "Other") - Number(b[0] === "Other"));
+  const grouped = skillGroups.length > 1;
   const edge = ["border-peach", "border-steel", "border-navy"];
 
   return (
@@ -237,20 +246,25 @@ export default async function Home() {
 
       {skills.length > 0 && (
         <section id="keahlian" className="scroll-mt-4 bg-steel">
-          <div
-            className={`${wrap} flex flex-col gap-5 py-8 md:flex-row md:items-center md:gap-10`}
-          >
+          <div className={`${wrap} py-12`}>
             <p className="label text-white">Skills</p>
-            <ul className="flex flex-wrap gap-3">
-              {skills.map((s: any) => (
-                <li
-                  key={s.id}
-                  className="rounded-full border border-white/35 px-5 py-2 font-medium text-white"
+            <dl className="mt-6 divide-y divide-white/15">
+              {skillGroups.map(([cat, list]) => (
+                <div
+                  key={cat}
+                  className={`grid gap-3 py-5 first:pt-0 last:pb-0 md:gap-8 ${grouped ? "md:grid-cols-[13rem_1fr]" : ""}`}
                 >
-                  {s.name}
-                </li>
+                  {grouped && <dt className="text-sm font-semibold text-white">{cat}</dt>}
+                  <dd className="flex flex-wrap gap-2">
+                    {list.map((s: any) => (
+                      <span key={s.id} className="rounded-full border border-white/35 px-4 py-1.5 text-sm font-medium text-white">
+                        {s.name}
+                      </span>
+                    ))}
+                  </dd>
+                </div>
               ))}
-            </ul>
+            </dl>
           </div>
         </section>
       )}

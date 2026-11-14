@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 type Project = {
   id: number; title: string; description: string; tech: string;
@@ -41,6 +41,42 @@ function Art({ i }: { i: number }) {
   );
 }
 
+function Description({ text }: { text: string }) {
+  const ref = useRef<HTMLParagraphElement>(null);
+  const [open, setOpen] = useState(false);
+  const [clamped, setClamped] = useState(false);
+
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+    const check = () => {
+      if (!open) setClamped(el.scrollHeight > el.clientHeight + 1);
+    };
+    check();
+    const ro = new ResizeObserver(check);
+    ro.observe(el);
+    return () => ro.disconnect();
+  }, [text, open]);
+
+  return (
+    <div className="mt-3">
+      <p ref={ref} className={`leading-relaxed ${open ? "" : "line-clamp-3"}`}>
+        {text}
+      </p>
+      {(clamped || open) && (
+        <button
+          type="button"
+          onClick={() => setOpen((o) => !o)}
+          aria-expanded={open}
+          className="inline-flex min-h-11 items-center text-sm font-semibold text-steel hover:underline"
+        >
+          {open ? "Show less" : "Read more"}
+        </button>
+      )}
+    </div>
+  );
+}
+
 export default function ProjectList({ projects }: { projects: Project[] }) {
   const [shown, setShown] = useState(FIRST);
   return (
@@ -74,7 +110,7 @@ export default function ProjectList({ projects }: { projects: Project[] }) {
               <div className="flex flex-1 flex-col p-6">
                 {meta && <p className="text-sm font-medium text-steel">{meta}</p>}
                 <h3 className="mt-2 font-display text-2xl font-semibold leading-tight tracking-tight text-navy">{x.title}</h3>
-                {x.description && <p className="mt-3 leading-relaxed">{x.description}</p>}
+                {x.description && <Description text={x.description} />}
                 <div className="mt-auto flex items-center justify-between gap-4 pt-4">
                   {x.url ? (
                     <a href={x.url} className="inline-flex min-h-11 items-center font-semibold text-steel hover:underline">View case study →</a>
