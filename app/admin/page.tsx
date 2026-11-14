@@ -5,10 +5,10 @@ import {
   addExperience, addHighlight, addProject, addSkill, logoutAction, removeItem, saveProfile,
   updateExperience, updateHighlight, updateProject, updateSkill,
 } from "@/app/actions";
+import { ActionForm, SubmitButton, Toaster } from "./ui";
 export const dynamic = "force-dynamic";
 
 const inp = "min-h-11 w-full rounded-xl border border-edge bg-white px-4 py-2 text-base";
-const btn = "min-h-11 rounded-full bg-peach px-6 font-semibold text-navy hover:brightness-95";
 
 function Card({ title, hint, children }: { title: string; hint?: string; children: React.ReactNode }) {
   return (
@@ -50,21 +50,21 @@ function Item({ table, id, title, action, children }: { table: string; id: numbe
   return (
     <li className="border-t border-edge">
       <details className="group">
-        <summary className="flex min-h-11 cursor-pointer list-none items-center justify-between gap-4 text-sm">
+        <summary className="-mx-2 flex min-h-11 cursor-pointer list-none items-center justify-between gap-4 rounded-lg px-2 text-sm transition-colors hover:bg-mist/60 active:bg-mist">
           <span>{title}</span>
           <span className="font-semibold text-steel group-open:hidden">Edit</span>
           <span className="hidden font-semibold text-steel group-open:inline">Tutup</span>
         </summary>
         <div className="pb-5 pt-2">
-          <form action={action} className="grid gap-4 md:grid-cols-2">
+          <ActionForm action={action} message="Perubahan tersimpan." className="grid gap-4 md:grid-cols-2">
             <input type="hidden" name="id" value={id} />
             {children}
-            <div className="md:col-span-2"><button className={btn}>Simpan perubahan</button></div>
-          </form>
-          <form action={removeItem} className="mt-2">
+            <div className="md:col-span-2"><SubmitButton>Simpan perubahan</SubmitButton></div>
+          </ActionForm>
+          <ActionForm action={removeItem} message="Item dihapus." confirmText="Hapus item ini? Tindakan ini tidak bisa dibatalkan." className="mt-2">
             <input type="hidden" name="table" value={table} /><input type="hidden" name="id" value={id} />
-            <button className="min-h-11 text-sm font-semibold text-[#9b2c2c] hover:underline">Hapus item ini</button>
-          </form>
+            <SubmitButton variant="danger" pendingLabel="Menghapus…">Hapus item ini</SubmitButton>
+          </ActionForm>
         </div>
       </details>
     </li>
@@ -87,18 +87,19 @@ export default async function Admin() {
   };
   return (
     <>
+      <Toaster />
       <header className="bg-navy">
         <div className="mx-auto flex max-w-3xl items-center justify-between px-6 py-4 text-white">
           <h1 className="font-display text-xl font-semibold">Kelola portofolio</h1>
           <div className="flex items-center gap-2 text-sm font-semibold">
-            <a href="/" target="_blank" className="inline-flex min-h-11 items-center rounded-full px-4 text-onnavy hover:text-white">Lihat situs</a>
-            <form action={logoutAction}><button className="min-h-11 rounded-full border border-white/40 px-5">Keluar</button></form>
+            <a href="/" target="_blank" className="inline-flex min-h-11 items-center rounded-full px-4 text-onnavy transition duration-150 hover:bg-white/10 hover:text-white active:scale-95">Lihat situs</a>
+            <form action={logoutAction}><button className="min-h-11 rounded-full border border-white/40 px-5 transition duration-150 hover:bg-white hover:text-navy active:scale-95">Keluar</button></form>
           </div>
         </div>
       </header>
       <main className="mx-auto max-w-3xl px-6 py-10">
         <Card title="Profil" hint="Teks utama situs. Kolom yang dikosongkan tidak ditampilkan.">
-          <form action={saveProfile} className="grid gap-4 md:grid-cols-2">
+          <ActionForm action={saveProfile} message="Profil tersimpan." className="grid gap-4 md:grid-cols-2">
             <Field name="name" label="Nama" value={p.name} />
             <Field name="hero_label" label="Label kecil di atas judul" value={p.hero_label} />
             <Field name="headline" label="Judul utama" value={p.headline} span />
@@ -113,12 +114,12 @@ export default async function Admin() {
             <Field name="github" label="Link GitHub" value={p.github} />
             <Field name="tableau" label="Link Tableau Public" value={p.tableau} />
             <Field name="footer_note" label="Teks footer" value={p.footer_note} span />
-            <div className="md:col-span-2"><button className={btn}>Simpan profil</button></div>
-          </form>
+            <div className="md:col-span-2"><SubmitButton>Simpan profil</SubmitButton></div>
+          </ActionForm>
         </Card>
 
         <Card title="Projek" hint="Yang terbaru tampil paling awal. Klik Edit pada sebuah projek untuk mengubahnya.">
-          <form action={addProject} className="mb-6 grid gap-4 md:grid-cols-2">
+          <ActionForm action={addProject} message="Projek ditambahkan." className="mb-6 grid gap-4 md:grid-cols-2">
             <Field name="title" label="Nama projek" span />
             <Field name="description" label="Deskripsi 1-2 kalimat" area span />
             <Field name="tech" label="Teknologi (pisahkan dengan koma)" />
@@ -128,8 +129,8 @@ export default async function Admin() {
             <Field name="repo" label="Link GitHub projek, mis. https://github.com/username/nama-repo (opsional)" span />
             <Field name="sort_order" label="Urutan tampil (1 = paling awal; kosongkan agar otomatis)" />
             <ImageField />
-            <div className="md:col-span-2"><button className={btn}>Tambah projek</button></div>
-          </form>
+            <div className="md:col-span-2"><SubmitButton pendingLabel="Menambahkan…">Tambah projek</SubmitButton></div>
+          </ActionForm>
           <ul>
             {projects.map((x: any, i: number) => (
               <Item key={x.id} table="projects" id={x.id} title={`${i + 1}. ${x.title}`} action={updateProject}>
@@ -147,12 +148,12 @@ export default async function Admin() {
           </ul>
         </Card>
 
-        <Card title="Keahlian" hint="Tampil sebagai chip di strip biru, urut sesuai waktu ditambahkan.">
-          <form action={addSkill} className="mb-5 grid gap-3 md:grid-cols-[1fr_1fr_auto]">
+        <Card title="Keahlian" hint="Dikelompokkan per kategori di situs. Kategori yang kosong masuk ke Other.">
+          <ActionForm action={addSkill} message="Keahlian ditambahkan." className="mb-5 grid gap-3 md:grid-cols-[1fr_1fr_auto]">
             <input name="name" required aria-label="Nama keahlian" placeholder="Mis. PostgreSQL" className={inp} />
             <input name="category" aria-label="Kategori" placeholder="Kategori, mis. Databases" className={inp} />
-            <button className={btn}>Tambah</button>
-          </form>
+            <SubmitButton pendingLabel="Menambahkan…">Tambah</SubmitButton>
+          </ActionForm>
           <ul>
             {skills.map((s: any) => (
               <Item key={s.id} table="skills" id={s.id} title={`${s.name} · ${s.category}`} action={updateSkill}>
@@ -164,11 +165,11 @@ export default async function Admin() {
         </Card>
 
         <Card title="Poin Tentang" hint="Poin pendek di bagian Tentang, mis. Rancang, Olah, Sajikan.">
-          <form action={addHighlight} className="mb-5 grid gap-4 md:grid-cols-2">
+          <ActionForm action={addHighlight} message="Poin ditambahkan." className="mb-5 grid gap-4 md:grid-cols-2">
             <Field name="title" label="Judul poin" />
             <Field name="text" label="Penjelasan singkat" />
-            <div className="md:col-span-2"><button className={btn}>Tambah poin</button></div>
-          </form>
+            <div className="md:col-span-2"><SubmitButton pendingLabel="Menambahkan…">Tambah poin</SubmitButton></div>
+          </ActionForm>
           <ul>
             {hl.map((x: any) => (
               <Item key={x.id} table="highlights" id={x.id} title={x.title} action={updateHighlight}>
@@ -180,14 +181,14 @@ export default async function Admin() {
         </Card>
 
         <Card title="Pengalaman" hint="Tampil di bagian Tentang. Yang terbaru ditambahkan tampil paling awal.">
-          <form action={addExperience} className="mb-6 grid gap-4 md:grid-cols-2">
+          <ActionForm action={addExperience} message="Pengalaman ditambahkan." className="mb-6 grid gap-4 md:grid-cols-2">
             <Field name="role" label="Posisi" />
             <Field name="company" label="Perusahaan / organisasi" />
             <Field name="start_date" label="Mulai, mis. Jan 2024" />
             <Field name="end_date" label="Selesai (kosong = Sekarang)" />
             <Field name="description" label="Apa yang kamu kerjakan (satu baris per poin)" area span />
-            <div className="md:col-span-2"><button className={btn}>Tambah pengalaman</button></div>
-          </form>
+            <div className="md:col-span-2"><SubmitButton pendingLabel="Menambahkan…">Tambah pengalaman</SubmitButton></div>
+          </ActionForm>
           <ul>
             {exps.map((x: any) => (
               <Item key={x.id} table="experiences" id={x.id} title={`${x.role}, ${x.company}`} action={updateExperience}>
