@@ -1,6 +1,7 @@
 import { sql } from "@/lib/db";
 import Image from "next/image";
 import ProjectList from "./ProjectList";
+import Reveal from "./Reveal";
 export const dynamic = "force-dynamic";
 
 const wrap = "mx-auto w-full max-w-[1200px] px-6";
@@ -140,7 +141,7 @@ export default async function Home() {
   });
   skillGroups.sort((a, b) => Number(a[0] === "Other") - Number(b[0] === "Other"));
   const grouped = skillGroups.length > 1;
-  const edge = ["border-peach", "border-steel", "border-navy"];
+  const bar = ["bg-peach", "bg-steel", "bg-navy"];
 
   return (
     <>
@@ -195,10 +196,40 @@ export default async function Home() {
         </div>
       </header>
 
-      <div className="bg-navy">
+            <div className="relative overflow-hidden bg-navy">
+                <div aria-hidden className="pointer-events-none absolute inset-0">
+          <div className="hero-grid absolute inset-0" />
+          <div className="hero-glow absolute -left-40 top-1/4 h-[32rem] w-[32rem] rounded-full" />
+                    <svg className="hero-trend absolute inset-x-0 bottom-0 h-3/5 w-full" viewBox="0 0 1200 300" preserveAspectRatio="none">
+            <path
+              className="hero-area"
+              d="M0 240 C120 220 180 140 300 160 S480 250 600 190 S800 60 920 100 S1100 150 1200 60 L1200 300 L0 300 Z"
+              fill="rgba(233,166,107,0.12)"
+            />
+            <path
+              className="hero-line"
+              vectorEffect="non-scaling-stroke"
+              d="M0 240 C120 220 180 140 300 160 S480 250 600 190 S800 60 920 100 S1100 150 1200 60"
+              fill="none"
+              stroke="#E9A66B"
+              strokeWidth="3"
+              strokeLinecap="round"
+            />
+            <path
+              className="hero-pulse"
+              pathLength={1}
+              vectorEffect="non-scaling-stroke"
+              d="M0 240 C120 220 180 140 300 160 S480 250 600 190 S800 60 920 100 S1100 150 1200 60"
+              fill="none"
+              stroke="#FFD9B0"
+              strokeWidth="4"
+              strokeLinecap="round"
+            />
+          </svg>
+        </div>
         <section
           id="top"
-          className={`${wrap} grid scroll-mt-4 items-center gap-12 pb-20 pt-10 md:grid-cols-2 md:gap-16 md:pb-28 md:pt-16`}
+          className={`${wrap} relative grid scroll-mt-4 items-center gap-12 pb-20 pt-10 md:grid-cols-2 md:gap-16 md:pb-28 md:pt-16`}
         >
           <div>
             {p.hero_label && <p className="label text-peach">{p.hero_label}</p>}
@@ -234,7 +265,7 @@ export default async function Home() {
           <div className="overflow-hidden rounded-3xl border border-white/15 bg-white/[0.06] p-2 md:p-3">
             <Image
               src="/fotoselwin.jpeg"
-              alt="Example of an analytics dashboard from my work"
+              alt="`Portrait of ${p.name}`"
               width={1600}
               height={1000}
               priority
@@ -246,6 +277,7 @@ export default async function Home() {
 
       {skills.length > 0 && (
         <section id="keahlian" className="scroll-mt-4 bg-steel">
+          <Reveal>
           <div className={`${wrap} py-12`}>
             <p className="label text-white">Skills</p>
             <dl className="mt-6 divide-y divide-white/15">
@@ -266,12 +298,14 @@ export default async function Home() {
               ))}
             </dl>
           </div>
+          </Reveal>
         </section>
       )}
 
       {projects.length > 0 && (
         <section id="projek" className="scroll-mt-4 bg-mist py-20 md:py-28">
           <div className={wrap}>
+            <Reveal>
             <p className="label text-steel">Selected projects</p>
             <h2 className={`${h2} mb-12 mt-3 max-w-2xl text-navy`}>
               Work that speaks through data.
@@ -282,6 +316,7 @@ export default async function Home() {
                 kind: x.kind, year: x.year, url: x.url, repo: x.repo, image_url: x.image_url ?? "",
               }))}
             />
+            </Reveal>
           </div>
         </section>
       )}
@@ -302,7 +337,7 @@ export default async function Home() {
                 className="absolute inset-0 translate-x-2 translate-y-2 rounded-3xl border-2 border-peach bg-peach/20"
               />
               <Image
-                src="/fotoselwin.jpeg"
+                src="/fotoselwin3.jpeg"
                 alt={`Photo of ${p.name}`}
                 width={600}
                 height={750}
@@ -310,7 +345,7 @@ export default async function Home() {
               />
             </div>
           </div>
-          <div>
+          <Reveal>
             {paras.map((t, i) => (
               <p
                 key={i}
@@ -321,12 +356,19 @@ export default async function Home() {
             ))}
             {hl.length > 0 && (
               <div className="mt-10 grid gap-6 sm:grid-cols-3">
-                {hl.map((x: any, i: number) => (
-                  <div key={x.id} className={`border-t-4 pt-4 ${edge[i % 3]}`}>
-                    <h3 className="font-display text-xl font-semibold text-navy">
-                      {x.title}
-                    </h3>
-                    <p className="mt-1">{x.text}</p>
+                                {hl.map((x: any, i: number) => (
+                  <div key={x.id}>
+                    <div
+                      aria-hidden
+                      className={`bar-shine h-1 rounded-full ${bar[i % 3]}`}
+                      style={{ "--d": `${i * 0.8}s` } as React.CSSProperties}
+                    />
+                    <div className="pt-4">
+                      <h3 className="font-display text-xl font-semibold text-navy">
+                        {x.title}
+                      </h3>
+                      <p className="mt-1">{x.text}</p>
+                    </div>
                   </div>
                 ))}
               </div>
@@ -358,37 +400,40 @@ export default async function Home() {
                 </ol>
               </div>
             )}
-          </div>
+          </Reveal>
         </section>
       )}
 
-      {hasContact && (
+            {hasContact && (
         <section id="kontak" className={`${wrap} scroll-mt-4 pb-16`}>
-          <div className="rounded-[32px] bg-navy px-6 py-14 text-center md:px-16 md:py-20">
-            <h2 className={`${h2} mx-auto max-w-2xl text-white`}>
-              {p.contact_title || "Have data that needs to be made clear?"}
-            </h2>
-            {p.contact_text && (
-              <p className="mx-auto mt-4 max-w-xl text-lg text-onnavy">
-                {p.contact_text}
-              </p>
-            )}
-            <div className="mt-9 flex flex-wrap justify-center gap-3">
-              {p.email && (
-                <a
-                  href={`mailto:${p.email}`}
-                  className={`${peachBtn} break-all`}
-                >
-                  {p.email}
-                </a>
-              )}
-              {social.map(([l, u]) => (
-                <a key={l} href={u} className={ghostBtn}>
-                  {l}
-                </a>
-              ))}
+          <Reveal>
+            <div className="relative overflow-hidden rounded-[32px] bg-navy px-6 py-14 text-center md:px-16 md:py-20">
+              <div aria-hidden className="pointer-events-none absolute inset-0">
+                <div className="cta-grid absolute inset-0" />
+                <div className="cta-glow absolute left-1/2 top-1/2 h-80 w-80 -translate-x-1/2 -translate-y-1/2 rounded-full" />
+              </div>
+              <div className="relative">
+                <h2 className={`${h2} mx-auto max-w-2xl text-white`}>
+                  {p.contact_title || "Have data that needs to be made clear?"}
+                </h2>
+                {p.contact_text && (
+                  <p className="mx-auto mt-4 max-w-xl text-lg text-onnavy">{p.contact_text}</p>
+                )}
+                <div className="mt-9 flex flex-wrap justify-center gap-3">
+                  {p.email && (
+                    <a href={`mailto:${p.email}`} className={`${peachBtn} break-all`}>
+                      {p.email}
+                    </a>
+                  )}
+                  {social.map(([l, u]) => (
+                    <a key={l} href={u} className={ghostBtn}>
+                      {l}
+                    </a>
+                  ))}
+                </div>
+              </div>
             </div>
-          </div>
+          </Reveal>
         </section>
       )}
 

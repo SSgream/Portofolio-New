@@ -91,7 +91,7 @@ export default function ProjectList({ projects }: { projects: Project[] }) {
           return (
             <article
               key={x.id}
-              className={`${i >= shown ? "hidden" : "flex"} flex-col overflow-hidden rounded-3xl border border-edge bg-card`}
+                            className={`${i >= shown ? "hidden" : "flex"} group flex-col overflow-hidden rounded-3xl border border-edge bg-card transition duration-300 hover:border-steel/40 hover:shadow-xl hover:shadow-navy/10 motion-safe:hover:-translate-y-1`}
             >
               {x.image_url ? (
                 <a
@@ -102,7 +102,7 @@ export default function ProjectList({ projects }: { projects: Project[] }) {
                   className="block aspect-[16/10] overflow-hidden bg-mist"
                 >
                   {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img src={x.image_url} alt={`${x.title} project preview`} loading="lazy" className="h-full w-full object-cover object-top" />
+                  <img src={x.image_url} alt={`${x.title} project preview`} loading="lazy" className="h-full w-full object-cover object-top transition-transform duration-500 motion-safe:group-hover:scale-105" />
                 </a>
               ) : (
                 <Art i={i} />

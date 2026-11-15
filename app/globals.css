@@ -25,3 +25,62 @@ html { scroll-behavior: smooth; scroll-padding-top: 6rem; }
 @keyframes toast-in { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
 .toast-in { animation: toast-in 0.2s ease-out; }
 @media (prefers-reduced-motion: reduce) { .toast-in { animation: none; } }
+
+.hero-grid {
+  background-image:
+    linear-gradient(rgba(195, 208, 224, 0.15) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(195, 208, 224, 0.15) 1px, transparent 1px);
+  background-size: 56px 56px;
+  mask-image: radial-gradient(ellipse at 35% 45%, #000 0%, transparent 85%);
+}
+.hero-glow {
+  background: radial-gradient(circle, rgba(70, 130, 200, 0.55), transparent 65%);
+  filter: blur(50px);
+  animation: glow-drift 14s ease-in-out infinite alternate;
+}
+@keyframes glow-drift { to { transform: translate(40vw, 6rem) scale(1.2); } }
+.hero-trend { mask-image: linear-gradient(to right, transparent 10%, #000 50%); }
+.hero-line { opacity: 0.45; }
+.hero-pulse {
+  stroke-dasharray: 0.22 2;
+  stroke-dashoffset: 0.22;
+  filter: drop-shadow(0 0 6px rgba(233, 166, 107, 0.9));
+  animation: line-sweep 6s cubic-bezier(0.45, 0.05, 0.55, 0.95) infinite;
+}
+@keyframes line-sweep { 0% { stroke-dashoffset: 0.22; } 85%, 100% { stroke-dashoffset: -1; } }
+.hero-area { animation: area-breathe 6s ease-in-out infinite; }
+@keyframes area-breathe { 0%, 100% { opacity: 0.55; } 50% { opacity: 1; } }
+@media (prefers-reduced-motion: reduce) {
+  .hero-glow, .hero-area { animation: none; }
+  .hero-pulse { display: none; }
+  .hero-line { opacity: 0.9; }
+}
+
+.cta-grid {
+  background-image:
+    linear-gradient(rgba(195, 208, 224, 0.12) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(195, 208, 224, 0.12) 1px, transparent 1px);
+  background-size: 56px 56px;
+  mask-image: radial-gradient(ellipse at 50% 50%, #000 0%, transparent 80%);
+}
+.cta-glow {
+  background: radial-gradient(circle, rgba(70, 130, 200, 0.45), transparent 65%);
+  filter: blur(50px);
+}
+
+.bar-shine { position: relative; overflow: hidden; }
+.bar-shine::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  width: 40%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.9), transparent);
+  transform: translateX(-100%);
+  animation: bar-sweep 4s ease-in-out infinite;
+  animation-delay: var(--d, 0s);
+}
+@keyframes bar-sweep {
+  0% { transform: translateX(-100%); }
+  60%, 100% { transform: translateX(260%); }
+}
+@media (prefers-reduced-motion: reduce) { .bar-shine::after { display: none; } }
