@@ -67,6 +67,25 @@ export async function updateProject(fd: FormData) {
     WHERE id=${Number(f(fd,"id"))}`;
   done();
 }
+export async function addCertificate(fd: FormData) {
+  await guard();
+  const image = await uploadImage(fd);
+  await sql`INSERT INTO certificates (title, issuer, year, verify_url, image_url)
+    VALUES (${f(fd,"title")}, ${f(fd,"issuer")}, ${f(fd,"year")}, ${fix(f(fd,"verify_url"))}, ${image})`;
+  done();
+}
+
+export async function updateCertificate(fd: FormData) {
+  await guard();
+  const image = await uploadImage(fd);
+  const remove = f(fd, "remove_image") === "1";
+  await sql`UPDATE certificates SET title=${f(fd,"title")}, issuer=${f(fd,"issuer")}, year=${f(fd,"year")},
+    verify_url=${fix(f(fd,"verify_url"))},
+    image_url = CASE WHEN ${image}::text <> '' THEN ${image}::text WHEN ${remove}::boolean THEN '' ELSE image_url END
+    WHERE id=${Number(f(fd,"id"))}`;
+  done();
+}
+
 export async function addExperience(fd: FormData) {
   await guard();
   await sql`INSERT INTO experiences (role, company, start_date, end_date, description)
@@ -107,5 +126,6 @@ export async function removeItem(fd: FormData) {
   else if (t === "projects") await sql`DELETE FROM projects WHERE id=${id}`;
   else if (t === "experiences") await sql`DELETE FROM experiences WHERE id=${id}`;
   else if (t === "highlights") await sql`DELETE FROM highlights WHERE id=${id}`;
+  else if (t === "certificates") await sql`DELETE FROM certificates WHERE id=${id}`;
   done();
 }

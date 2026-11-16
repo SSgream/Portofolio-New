@@ -3,7 +3,7 @@ import { sql } from "@/lib/db";
 import { isAdmin } from "@/lib/auth";
 import {
   addExperience, addHighlight, addProject, addSkill, logoutAction, removeItem, saveProfile,
-  updateExperience, updateHighlight, updateProject, updateSkill,
+  updateExperience, updateHighlight, updateProject, updateSkill, addCertificate, updateCertificate
 } from "@/app/actions";
 import { ActionForm, SubmitButton, Toaster } from "./ui";
 export const dynamic = "force-dynamic";
@@ -28,11 +28,11 @@ function Field({ name, label, value, area, span }: { name: string; label: string
   );
 }
 /* Pilih gambar projek. Di form edit, tampilkan gambar saat ini dan opsi menghapusnya. */
-function ImageField({ current }: { current?: string }) {
+function ImageField({ current, label = "Gambar projek (JPG, PNG, atau WebP, maks 4 MB)" }: { current?: string; label?: string }) {
   return (
     <div className="md:col-span-2">
       <label className="block text-sm font-medium text-navy">
-        Gambar projek (JPG, PNG, atau WebP, maks 4 MB)
+        {label}
         <input type="file" name="image" accept="image/*" className={`${inp} mt-1 font-normal file:mr-4 file:rounded-full file:border-0 file:bg-mist file:px-4 file:py-1.5 file:font-semibold file:text-navy`} />
       </label>
       {current && (
@@ -73,12 +73,13 @@ function Item({ table, id, title, action, children }: { table: string; id: numbe
 
 export default async function Admin() {
   if (!(await isAdmin())) redirect("/admin/login");
-  const [prof, skills, projects, exps, hl] = await Promise.all([
+  const [prof, skills, projects, exps, hl, certs] = await Promise.all([
     sql`SELECT * FROM profile WHERE id=1`,
     sql`SELECT * FROM skills ORDER BY id`,
     sql`SELECT * FROM projects ORDER BY (sort_order = 0), sort_order, id DESC`,
     sql`SELECT * FROM experiences ORDER BY id DESC`,
     sql`SELECT * FROM highlights ORDER BY id`,
+    sql`SELECT * FROM certificates ORDER BY id DESC`,
   ]);
   const p: any = {
     name: "", hero_label: "", headline: "", headline_accent: "", bio: "", about_title: "", about_text: "",
@@ -175,6 +176,28 @@ export default async function Admin() {
               <Item key={x.id} table="highlights" id={x.id} title={x.title} action={updateHighlight}>
                 <Field name="title" label="Judul poin" value={x.title} />
                 <Field name="text" label="Penjelasan singkat" value={x.text} />
+              </Item>
+            ))}
+          </ul>
+        </Card>
+
+        <Card title="Sertifikat" hint="Unggah gambar sertifikat. Tutupi data pribadi sensitif seperti nomor identitas sebelum mengunggah.">
+          <ActionForm action={addCertificate} message="Sertifikat ditambahkan." className="mb-6 grid gap-4 md:grid-cols-2">
+            <Field name="title" label="Nama sertifikat" span />
+            <Field name="issuer" label="Penerbit, mis. Coursera" />
+            <Field name="year" label="Tahun" />
+            <Field name="verify_url" label="Link verifikasi (opsional)" span />
+            <ImageField label="Gambar sertifikat (JPG, PNG, atau WebP, maks 4 MB)" />
+            <div className="md:col-span-2"><SubmitButton pendingLabel="Menambahkan…">Tambah sertifikat</SubmitButton></div>
+          </ActionForm>
+          <ul>
+            {certs.map((x: any) => (
+              <Item key={x.id} table="certificates" id={x.id} title={`${x.title}${x.issuer ? " · " + x.issuer : ""}`} action={updateCertificate}>
+                <Field name="title" label="Nama sertifikat" value={x.title} span />
+                <Field name="issuer" label="Penerbit" value={x.issuer} />
+                <Field name="year" label="Tahun" value={x.year} />
+                <Field name="verify_url" label="Link verifikasi" value={x.verify_url} span />
+                <ImageField current={x.image_url} label="Ganti gambar (JPG, PNG, atau WebP, maks 4 MB)" />
               </Item>
             ))}
           </ul>

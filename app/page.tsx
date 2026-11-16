@@ -86,12 +86,13 @@ function Art({ i }: { i: number }) {
 }
 
 export default async function Home() {
-  const [prof, skills, projects, exps, hl] = await Promise.all([
+  const [prof, skills, projects, exps, hl, certs] = await Promise.all([
     sql`SELECT * FROM profile WHERE id=1`,
     sql`SELECT * FROM skills ORDER BY id`,
     sql`SELECT * FROM projects ORDER BY (sort_order = 0), sort_order, id DESC`,
     sql`SELECT * FROM experiences ORDER BY id DESC`,
     sql`SELECT * FROM highlights ORDER BY id`,
+    sql`SELECT * FROM certificates ORDER BY id DESC`,
   ]);
   const p: any = {
     name: "Your Name",
@@ -128,18 +129,23 @@ export default async function Home() {
     projects.length > 0 && ["Projects", "#projek"],
     skills.length > 0 && ["Skills", "#keahlian"],
     hasAbout && ["About", "#tentang"],
+    certs.length > 0 && ["Certificates", "#sertifikat"],
   ].filter(Boolean) as [string, string][];
   const at = p.headline_accent
     ? String(p.headline).indexOf(p.headline_accent)
     : -1;
   const skillGroups: [string, any[]][] = [];
   skills.forEach((s: any) => {
-    const cat = ["", "Keahlian", "Umum"].includes(s.category) ? "Other" : s.category;
+    const cat = ["", "Keahlian", "Umum"].includes(s.category)
+      ? "Other"
+      : s.category;
     const g = skillGroups.find(([c]) => c === cat);
     if (g) g[1].push(s);
     else skillGroups.push([cat, [s]]);
   });
-  skillGroups.sort((a, b) => Number(a[0] === "Other") - Number(b[0] === "Other"));
+  skillGroups.sort(
+    (a, b) => Number(a[0] === "Other") - Number(b[0] === "Other"),
+  );
   const grouped = skillGroups.length > 1;
   const bar = ["bg-peach", "bg-steel", "bg-navy"];
 
@@ -196,11 +202,15 @@ export default async function Home() {
         </div>
       </header>
 
-            <div className="relative overflow-hidden bg-navy">
-                <div aria-hidden className="pointer-events-none absolute inset-0">
+      <div className="relative overflow-hidden bg-navy">
+        <div aria-hidden className="pointer-events-none absolute inset-0">
           <div className="hero-grid absolute inset-0" />
           <div className="hero-glow absolute -left-40 top-1/4 h-[32rem] w-[32rem] rounded-full" />
-                    <svg className="hero-trend absolute inset-x-0 bottom-0 h-3/5 w-full" viewBox="0 0 1200 300" preserveAspectRatio="none">
+          <svg
+            className="hero-trend absolute inset-x-0 bottom-0 h-3/5 w-full"
+            viewBox="0 0 1200 300"
+            preserveAspectRatio="none"
+          >
             <path
               className="hero-area"
               d="M0 240 C120 220 180 140 300 160 S480 250 600 190 S800 60 920 100 S1100 150 1200 60 L1200 300 L0 300 Z"
@@ -278,26 +288,33 @@ export default async function Home() {
       {skills.length > 0 && (
         <section id="keahlian" className="scroll-mt-4 bg-steel">
           <Reveal>
-          <div className={`${wrap} py-12`}>
-            <p className="label text-white">Skills</p>
-            <dl className="mt-6 divide-y divide-white/15">
-              {skillGroups.map(([cat, list]) => (
-                <div
-                  key={cat}
-                  className={`grid gap-3 py-5 first:pt-0 last:pb-0 md:gap-8 ${grouped ? "md:grid-cols-[13rem_1fr]" : ""}`}
-                >
-                  {grouped && <dt className="text-sm font-semibold text-white">{cat}</dt>}
-                  <dd className="flex flex-wrap gap-2">
-                    {list.map((s: any) => (
-                      <span key={s.id} className="rounded-full border border-white/35 px-4 py-1.5 text-sm font-medium text-white">
-                        {s.name}
-                      </span>
-                    ))}
-                  </dd>
-                </div>
-              ))}
-            </dl>
-          </div>
+            <div className={`${wrap} py-12`}>
+              <p className="label text-white">Skills</p>
+              <dl className="mt-6 divide-y divide-white/15">
+                {skillGroups.map(([cat, list]) => (
+                  <div
+                    key={cat}
+                    className={`grid gap-3 py-5 first:pt-0 last:pb-0 md:gap-8 ${grouped ? "md:grid-cols-[13rem_1fr]" : ""}`}
+                  >
+                    {grouped && (
+                      <dt className="text-sm font-semibold text-white">
+                        {cat}
+                      </dt>
+                    )}
+                    <dd className="flex flex-wrap gap-2">
+                      {list.map((s: any) => (
+                        <span
+                          key={s.id}
+                          className="rounded-full border border-white/35 px-4 py-1.5 text-sm font-medium text-white"
+                        >
+                          {s.name}
+                        </span>
+                      ))}
+                    </dd>
+                  </div>
+                ))}
+              </dl>
+            </div>
           </Reveal>
         </section>
       )}
@@ -306,16 +323,23 @@ export default async function Home() {
         <section id="projek" className="scroll-mt-4 bg-mist py-20 md:py-28">
           <div className={wrap}>
             <Reveal>
-            <p className="label text-steel">Selected projects</p>
-            <h2 className={`${h2} mb-12 mt-3 max-w-2xl text-navy`}>
-              Work that speaks through data.
-            </h2>
-            <ProjectList
-              projects={projects.map((x: any) => ({
-                id: x.id, title: x.title, description: x.description, tech: x.tech,
-                kind: x.kind, year: x.year, url: x.url, repo: x.repo, image_url: x.image_url ?? "",
-              }))}
-            />
+              <p className="label text-steel">Selected projects</p>
+              <h2 className={`${h2} mb-12 mt-3 max-w-2xl text-navy`}>
+                Work that speaks through data.
+              </h2>
+              <ProjectList
+                projects={projects.map((x: any) => ({
+                  id: x.id,
+                  title: x.title,
+                  description: x.description,
+                  tech: x.tech,
+                  kind: x.kind,
+                  year: x.year,
+                  url: x.url,
+                  repo: x.repo,
+                  image_url: x.image_url ?? "",
+                }))}
+              />
             </Reveal>
           </div>
         </section>
@@ -356,7 +380,7 @@ export default async function Home() {
             ))}
             {hl.length > 0 && (
               <div className="mt-10 grid gap-6 sm:grid-cols-3">
-                                {hl.map((x: any, i: number) => (
+                {hl.map((x: any, i: number) => (
                   <div key={x.id}>
                     <div
                       aria-hidden
@@ -404,7 +428,70 @@ export default async function Home() {
         </section>
       )}
 
-            {hasContact && (
+            {certs.length > 0 && (
+        <section id="sertifikat" className="scroll-mt-4 bg-mist py-20 md:py-28">
+          <div className={wrap}>
+            <Reveal>
+              <p className="label text-steel">Certificates</p>
+              <h2 className={`${h2} mb-12 mt-3 max-w-2xl text-navy`}>Continuous learning.</h2>
+              <div className="grid grid-cols-[repeat(auto-fit,minmax(min(100%,19rem),1fr))] gap-6">
+                {certs.map((x: any) => {
+                  const info = [x.issuer, x.year].filter(Boolean).join(" · ");
+                  if (!x.image_url) {
+                    return (
+                      <article key={x.id} className="flex aspect-[4/3] flex-col justify-end rounded-3xl border border-edge bg-card p-6">
+                        <h3 className="font-display text-xl font-semibold leading-snug text-navy">{x.title}</h3>
+                        {info && <p className="mt-1 text-sm text-steel">{info}</p>}
+                      </article>
+                    );
+                  }
+                  return (
+                    <article
+                      key={x.id}
+                      className="group relative aspect-[4/3] overflow-hidden rounded-3xl border border-edge bg-white shadow-sm transition duration-300 hover:shadow-xl hover:shadow-navy/15"
+                    >
+                      <a
+                        href={x.image_url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        aria-label={`Open ${x.title} certificate in full size`}
+                        className="block h-full w-full"
+                      >
+                        {/* eslint-disable-next-line @next/next/no-img-element */}
+                        <img
+                          src={x.image_url}
+                          alt={`${x.title} certificate`}
+                          loading="lazy"
+                          className="h-full w-full object-cover object-top transition-transform duration-500 motion-safe:group-hover:scale-105"
+                        />
+                      </a>
+                      <div className="pointer-events-none absolute inset-0 flex flex-col justify-end bg-linear-to-t from-navy/95 via-navy/60 to-navy/25 p-5 opacity-0 transition-opacity duration-300 group-focus-within:opacity-100 group-hover:opacity-100 [@media(hover:none)]:opacity-100">
+                        <h3 className="line-clamp-3 font-display text-lg font-semibold leading-snug text-white">{x.title}</h3>
+                        {info && <p className="mt-1 text-sm text-onnavy">{info}</p>}
+                        <div className="mt-3 flex items-center justify-between gap-3 text-sm font-semibold text-white">
+                          <span>View full size ↗</span>
+                          {x.verify_url && (
+                            <a
+                              href={x.verify_url}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="pointer-events-auto inline-flex min-h-11 items-center rounded-full bg-peach px-4 text-navy transition-colors hover:bg-white"
+                            >
+                              Verify
+                            </a>
+                          )}
+                        </div>
+                      </div>
+                    </article>
+                  );
+                })}
+              </div>
+            </Reveal>
+          </div>
+        </section>
+      )}
+
+      {hasContact && (
         <section id="kontak" className={`${wrap} scroll-mt-4 pb-16`}>
           <Reveal>
             <div className="relative overflow-hidden rounded-[32px] bg-navy px-6 py-14 text-center md:px-16 md:py-20">
@@ -417,11 +504,16 @@ export default async function Home() {
                   {p.contact_title || "Have data that needs to be made clear?"}
                 </h2>
                 {p.contact_text && (
-                  <p className="mx-auto mt-4 max-w-xl text-lg text-onnavy">{p.contact_text}</p>
+                  <p className="mx-auto mt-4 max-w-xl text-lg text-onnavy">
+                    {p.contact_text}
+                  </p>
                 )}
                 <div className="mt-9 flex flex-wrap justify-center gap-3">
                   {p.email && (
-                    <a href={`mailto:${p.email}`} className={`${peachBtn} break-all`}>
+                    <a
+                      href={`mailto:${p.email}`}
+                      className={`${peachBtn} break-all`}
+                    >
                       {p.email}
                     </a>
                   )}
