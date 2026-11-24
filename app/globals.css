@@ -14,17 +14,51 @@
 }
 @theme inline {
   --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
-  --font-display: var(--font-space), var(--font-inter), ui-sans-serif, sans-serif;
+  --font-display:
+    var(--font-space), var(--font-inter), ui-sans-serif, sans-serif;
 }
-body { background: var(--color-page); color: var(--color-body); }
-:focus-visible { outline: 2px solid var(--color-steel); box-shadow: 0 0 0 5px var(--color-peach); }
-html { scroll-behavior: smooth; scroll-padding-top: 6rem; }
-@media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
-.label { font-size: 14px; letter-spacing: 0.14em; text-transform: uppercase; font-weight: 600; }
+body {
+  background: var(--color-page);
+  color: var(--color-body);
+}
+:focus-visible {
+  outline: 2px solid var(--color-steel);
+  box-shadow: 0 0 0 5px var(--color-peach);
+}
+html {
+  scroll-behavior: smooth;
+  scroll-padding-top: 6rem;
+}
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+}
+.label {
+  font-size: 14px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  font-weight: 600;
+}
 
-@keyframes toast-in { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
-.toast-in { animation: toast-in 0.2s ease-out; }
-@media (prefers-reduced-motion: reduce) { .toast-in { animation: none; } }
+@keyframes toast-in {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+.toast-in {
+  animation: toast-in 0.2s ease-out;
+}
+@media (prefers-reduced-motion: reduce) {
+  .toast-in {
+    animation: none;
+  }
+}
 
 .hero-grid {
   background-image:
@@ -34,26 +68,63 @@ html { scroll-behavior: smooth; scroll-padding-top: 6rem; }
   mask-image: radial-gradient(ellipse at 35% 45%, #000 0%, transparent 85%);
 }
 .hero-glow {
-  background: radial-gradient(circle, rgba(70, 130, 200, 0.55), transparent 65%);
+  background: radial-gradient(
+    circle,
+    rgba(70, 130, 200, 0.55),
+    transparent 65%
+  );
   filter: blur(50px);
   animation: glow-drift 14s ease-in-out infinite alternate;
 }
-@keyframes glow-drift { to { transform: translate(40vw, 6rem) scale(1.2); } }
-.hero-trend { mask-image: linear-gradient(to right, transparent 10%, #000 50%); }
-.hero-line { opacity: 0.45; }
+@keyframes glow-drift {
+  to {
+    transform: translate(40vw, 6rem) scale(1.2);
+  }
+}
+.hero-trend {
+  mask-image: linear-gradient(to right, transparent 10%, #000 50%);
+}
+.hero-line {
+  opacity: 0.45;
+}
 .hero-pulse {
   stroke-dasharray: 0.22 2;
   stroke-dashoffset: 0.22;
   filter: drop-shadow(0 0 6px rgba(233, 166, 107, 0.9));
   animation: line-sweep 6s cubic-bezier(0.45, 0.05, 0.55, 0.95) infinite;
 }
-@keyframes line-sweep { 0% { stroke-dashoffset: 0.22; } 85%, 100% { stroke-dashoffset: -1; } }
-.hero-area { animation: area-breathe 6s ease-in-out infinite; }
-@keyframes area-breathe { 0%, 100% { opacity: 0.55; } 50% { opacity: 1; } }
+@keyframes line-sweep {
+  0% {
+    stroke-dashoffset: 0.22;
+  }
+  85%,
+  100% {
+    stroke-dashoffset: -1;
+  }
+}
+.hero-area {
+  animation: area-breathe 6s ease-in-out infinite;
+}
+@keyframes area-breathe {
+  0%,
+  100% {
+    opacity: 0.55;
+  }
+  50% {
+    opacity: 1;
+  }
+}
 @media (prefers-reduced-motion: reduce) {
-  .hero-glow, .hero-area { animation: none; }
-  .hero-pulse { display: none; }
-  .hero-line { opacity: 0.9; }
+  .hero-glow,
+  .hero-area {
+    animation: none;
+  }
+  .hero-pulse {
+    display: none;
+  }
+  .hero-line {
+    opacity: 0.9;
+  }
 }
 
 .cta-grid {
@@ -64,23 +135,139 @@ html { scroll-behavior: smooth; scroll-padding-top: 6rem; }
   mask-image: radial-gradient(ellipse at 50% 50%, #000 0%, transparent 80%);
 }
 .cta-glow {
-  background: radial-gradient(circle, rgba(70, 130, 200, 0.45), transparent 65%);
+  background: radial-gradient(
+    circle,
+    rgba(70, 130, 200, 0.45),
+    transparent 65%
+  );
   filter: blur(50px);
 }
 
-.bar-shine { position: relative; overflow: hidden; }
+.bar-shine {
+  position: relative;
+  overflow: hidden;
+}
 .bar-shine::after {
   content: "";
   position: absolute;
   inset: 0;
   width: 40%;
-  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.9), transparent);
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.9),
+    transparent
+  );
   transform: translateX(-100%);
   animation: bar-sweep 4s ease-in-out infinite;
   animation-delay: var(--d, 0s);
 }
 @keyframes bar-sweep {
-  0% { transform: translateX(-100%); }
-  60%, 100% { transform: translateX(260%); }
+  0% {
+    transform: translateX(-100%);
+  }
+  60%,
+  100% {
+    transform: translateX(260%);
+  }
 }
-@media (prefers-reduced-motion: reduce) { .bar-shine::after { display: none; } }
+@media (prefers-reduced-motion: reduce) {
+  .bar-shine::after {
+    display: none;
+  }
+}
+
+@keyframes intro-rise {
+  from {
+    opacity: 0;
+    transform: translateY(0.9em);
+    filter: blur(8px);
+  }
+}
+@keyframes intro-pop {
+  from {
+    opacity: 0;
+    transform: scale(0.7);
+    filter: blur(10px);
+  }
+}
+@keyframes intro-draw {
+  from {
+    transform: scaleX(0);
+  }
+}
+@keyframes intro-fade-in {
+  from {
+    opacity: 0;
+  }
+}
+@keyframes intro-out {
+  to {
+    opacity: 0;
+  }
+}
+@keyframes intro-breathe {
+  0%,
+  100% {
+    transform: translate(-50%, -50%) scale(1);
+    opacity: 0.7;
+  }
+  50% {
+    transform: translate(-50%, -50%) scale(1.15);
+    opacity: 1;
+  }
+}
+@keyframes intro-failsafe {
+  to {
+    opacity: 0;
+    visibility: hidden;
+  }
+}
+
+.intro-avatar {
+  animation: intro-pop 0.9s cubic-bezier(0.2, 0.8, 0.2, 1) backwards;
+}
+.intro-letter {
+  animation: intro-rise 0.9s cubic-bezier(0.2, 0.8, 0.2, 1) backwards;
+}
+.intro-line {
+  animation: intro-draw 0.9s cubic-bezier(0.4, 0, 0.2, 1) 1.5s backwards;
+}
+.intro-label {
+  animation: intro-fade-in 0.8s ease-out 1.9s backwards;
+}
+.intro-glow {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 22rem;
+  height: 22rem;
+  border-radius: 9999px;
+  background: radial-gradient(circle, rgba(70, 130, 200, 0.5), transparent 65%);
+  filter: blur(40px);
+  animation: intro-breathe 4s ease-in-out infinite;
+}
+.is-leaving .intro-line,
+.is-leaving .intro-label,
+.is-leaving button {
+  animation: intro-out 0.4s ease-out forwards;
+}
+
+/* Cadangan: kalau JavaScript gagal, layar intro hilang sendiri setelah 8 detik */
+.intro-root {
+  animation: intro-failsafe 0.01s 8s forwards;
+}
+
+/* Nama dan foto di header disembunyikan selama peluncuran, lalu tampil seketika saat tiba */
+html[data-intro="playing"] .intro-hide {
+  opacity: 0;
+}
+
+html {
+  scrollbar-gutter: stable;
+}
+
+/* Selama intro, jalur scrollbar di kanan ikut berwarna navy supaya tidak ada garis terang di tepi layar */
+html[data-intro-active] {
+  background: var(--color-navy);
+}

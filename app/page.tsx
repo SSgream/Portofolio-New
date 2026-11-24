@@ -2,6 +2,7 @@ import { sql } from "@/lib/db";
 import Image from "next/image";
 import ProjectList from "./ProjectList";
 import Reveal from "./Reveal";
+import Intro from "./Intro";
 export const dynamic = "force-dynamic";
 
 const wrap = "mx-auto w-full max-w-[1200px] px-6";
@@ -151,6 +152,7 @@ export default async function Home() {
 
   return (
     <>
+      <Intro name={p.name} label={p.hero_label} />
       <header className="sticky top-0 z-50 border-b border-white/10 bg-navy">
         <div className={`${wrap} flex items-center justify-between py-4`}>
           <a
@@ -158,13 +160,19 @@ export default async function Home() {
             className="flex min-h-11 items-center gap-3 text-white"
           >
             <Image
+              id="site-avatar"
               src="/fotoselwin.jpeg"
               alt=""
               width={80}
               height={80}
-              className="h-10 w-10 rounded-full object-cover"
+              className="intro-hide h-10 w-10 rounded-full object-cover"
             />
-            <span className="font-display text-xl font-semibold">{p.name}</span>
+            <span
+              id="site-name"
+              className="intro-hide font-display text-xl font-semibold"
+            >
+              {p.name}
+            </span>
           </a>
           <nav className="hidden items-center gap-2 md:flex">
             {nav.map(([l, h]) => (
@@ -428,20 +436,29 @@ export default async function Home() {
         </section>
       )}
 
-            {certs.length > 0 && (
+      {certs.length > 0 && (
         <section id="sertifikat" className="scroll-mt-4 bg-mist py-20 md:py-28">
           <div className={wrap}>
             <Reveal>
               <p className="label text-steel">Certificates</p>
-              <h2 className={`${h2} mb-12 mt-3 max-w-2xl text-navy`}>Continuous learning.</h2>
+              <h2 className={`${h2} mb-12 mt-3 max-w-2xl text-navy`}>
+                Continuous learning.
+              </h2>
               <div className="grid grid-cols-[repeat(auto-fit,minmax(min(100%,19rem),1fr))] gap-6">
                 {certs.map((x: any) => {
                   const info = [x.issuer, x.year].filter(Boolean).join(" · ");
                   if (!x.image_url) {
                     return (
-                      <article key={x.id} className="flex aspect-[4/3] flex-col justify-end rounded-3xl border border-edge bg-card p-6">
-                        <h3 className="font-display text-xl font-semibold leading-snug text-navy">{x.title}</h3>
-                        {info && <p className="mt-1 text-sm text-steel">{info}</p>}
+                      <article
+                        key={x.id}
+                        className="flex aspect-[4/3] flex-col justify-end rounded-3xl border border-edge bg-card p-6"
+                      >
+                        <h3 className="font-display text-xl font-semibold leading-snug text-navy">
+                          {x.title}
+                        </h3>
+                        {info && (
+                          <p className="mt-1 text-sm text-steel">{info}</p>
+                        )}
                       </article>
                     );
                   }
@@ -466,8 +483,12 @@ export default async function Home() {
                         />
                       </a>
                       <div className="pointer-events-none absolute inset-0 flex flex-col justify-end bg-linear-to-t from-navy/95 via-navy/60 to-navy/25 p-5 opacity-0 transition-opacity duration-300 group-focus-within:opacity-100 group-hover:opacity-100 [@media(hover:none)]:opacity-100">
-                        <h3 className="line-clamp-3 font-display text-lg font-semibold leading-snug text-white">{x.title}</h3>
-                        {info && <p className="mt-1 text-sm text-onnavy">{info}</p>}
+                        <h3 className="line-clamp-3 font-display text-lg font-semibold leading-snug text-white">
+                          {x.title}
+                        </h3>
+                        {info && (
+                          <p className="mt-1 text-sm text-onnavy">{info}</p>
+                        )}
                         <div className="mt-3 flex items-center justify-between gap-3 text-sm font-semibold text-white">
                           <span>View full size ↗</span>
                           {x.verify_url && (
@@ -492,7 +513,7 @@ export default async function Home() {
       )}
 
       {hasContact && (
-        <section id="kontak" className={`${wrap} scroll-mt-4 pb-16`}>
+        <section id="kontak" className={`${wrap} scroll-mt-4 pb-16 ${certs.length > 0 ? "pt-16 md:pt-24" : ""}`}>
           <Reveal>
             <div className="relative overflow-hidden rounded-[32px] bg-navy px-6 py-14 text-center md:px-16 md:py-20">
               <div aria-hidden className="pointer-events-none absolute inset-0">
