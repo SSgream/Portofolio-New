@@ -93,12 +93,10 @@ export default function Intro({
       }`}
     >
       <div
-        className={`absolute inset-0 bg-navy transition-opacity duration-1000 ease-in-out ${
+        className={`absolute inset-0 bg-white transition-opacity duration-1000 ease-in-out ${
           bgOut ? "opacity-0 delay-200" : "opacity-100"
         }`}
       >
-        <div className="hero-grid absolute inset-0" />
-        <div className="intro-glow" />
       </div>
 
       <div className="relative flex h-full flex-col items-center justify-center px-6 text-center">
@@ -107,13 +105,13 @@ export default function Intro({
           <img
             src={photo}
             alt=""
-            className="intro-avatar h-full w-full rounded-full object-cover"
+            className="intro-avatar h-full w-full rounded-full object-cover shadow-lg ring-4 ring-white"
           />
         </div>
         <div
           ref={nameRef}
           aria-label={name}
-          className="font-display text-[clamp(2.25rem,8vw,5.5rem)] font-semibold leading-[1.4] text-white"
+          className="font-display text-[clamp(2.25rem,8vw,5.5rem)] font-semibold leading-[1.4] text-navy"
         >
           {name.split("").map((ch, i) => (
             <span
@@ -126,14 +124,14 @@ export default function Intro({
             </span>
           ))}
         </div>
-        <div className="intro-line mt-3 h-0.5 w-40 origin-left rounded-full bg-peach" />
-        {label && <p className="intro-label label mt-5 text-peach">{label}</p>}
+        <div className="intro-line mt-3 h-0.5 w-40 origin-left rounded-full bg-steel" />
+        {label && <p className="intro-label label mt-5 text-steel">{label}</p>}
       </div>
 
       <button
         type="button"
         onClick={() => finish.current()}
-        className="absolute bottom-6 right-6 inline-flex min-h-11 items-center rounded-full border border-white/30 px-5 text-sm font-semibold text-onnavy transition duration-150 hover:bg-white/10 hover:text-white active:scale-95"
+        className="absolute bottom-6 right-6 inline-flex min-h-11 items-center rounded-full border border-edge px-5 text-sm font-semibold text-navy transition duration-150 hover:bg-mist active:scale-95"
       >
         Skip
       </button>

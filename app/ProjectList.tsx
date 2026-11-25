@@ -9,6 +9,14 @@ type Project = {
 const FIRST = 3; // jumlah projek yang tampil di awal
 const STEP = 6; // tambahan setiap klik "View more"
 
+/* Posisi awal tiap kartu (kiri / tengah / kanan) sebelum "mendarat".
+   x, y = jarak dari posisi akhir, r = kemiringan. Ubah angkanya untuk efek lebih liar / lebih kalem. */
+const SCATTER = [
+  { x: "-9vw", y: "150px", r: "-7deg" },
+  { x: "0vw", y: "240px", r: "3deg" },
+  { x: "9vw", y: "150px", r: "7deg" },
+];
+
 function Art({ i }: { i: number }) {
   const v = i % 3;
   const bg = ["bg-navy", "bg-steel", "bg-cream"][v];
@@ -79,35 +87,103 @@ function Description({ text }: { text: string }) {
 
 export default function ProjectList({ projects }: { projects: Project[] }) {
   const [shown, setShown] = useState(FIRST);
+  const [from, setFrom] = useState(FIRST); // kartu mulai dari index ini yang animasi masuk
+  const [closing, setClosing] = useState(false);
+  const gridRef = useRef<HTMLDivElement>(null);
+
+  /* Scroll-linked: tiap kartu punya progres sendiri (--p, 0 → 1).
+     Posisi dihitung dari offsetTop (bukan getBoundingClientRect) supaya
+     transform kartu tidak memengaruhi perhitungannya sendiri. */
+  useEffect(() => {
+    const grid = gridRef.current;
+    if (!grid) return;
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+
+    let raf = 0;
+    const update = () => {
+      raf = 0;
+      const vh = window.innerHeight;
+      const gridTop = grid.getBoundingClientRect().top;
+      Array.from(grid.children).forEach((node) => {
+        const card = node as HTMLElement;
+        const top = gridTop + card.offsetTop; // posisi kartu di layar tanpa transform
+        const t = (vh * 0.98 - top) / (vh * 0.5);
+        const p = Math.min(1, Math.max(0, t));
+        const eased = 1 - Math.pow(1 - p, 3); // easeOutCubic
+        card.style.setProperty("--p", eased.toFixed(4));
+      });
+    };
+    const onScroll = () => {
+      if (!raf) raf = requestAnimationFrame(update);
+    };
+    update();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    window.addEventListener("resize", onScroll);
+    return () => {
+      window.removeEventListener("scroll", onScroll);
+      window.removeEventListener("resize", onScroll);
+      if (raf) cancelAnimationFrame(raf);
+    };
+  }, [shown, projects.length]);
+
+  const more = () => {
+    setFrom(shown);
+    setShown((n) => n + STEP);
+  };
+
+  const less = () => {
+    setClosing(true);
+    window.setTimeout(() => {
+      setShown(FIRST);
+      setFrom(FIRST);
+      setClosing(false);
+      const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+      document.getElementById("projek")?.scrollIntoView({ behavior: reduce ? "auto" : "smooth" });
+    }, 380);
+  };
+
   return (
     <>
-      <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+      <div ref={gridRef} className="relative grid gap-6 md:grid-cols-2 lg:grid-cols-3">
         {projects.map((x, i) => {
           const meta = [
             String(x.tech).split(",").map((t) => t.trim()).filter(Boolean).join(", "),
             x.kind,
             x.year,
           ].filter(Boolean).join(" · ");
+          const s = SCATTER[i % 3];
           return (
             <article
               key={x.id}
-                            className={`${i >= shown ? "hidden" : "flex"} group flex-col overflow-hidden rounded-3xl border border-edge bg-card transition duration-300 hover:border-steel/40 hover:shadow-xl hover:shadow-navy/10 motion-safe:hover:-translate-y-1`}
+              style={{
+                "--x": s.x, "--y": s.y, "--r": s.r,
+                animationDelay: closing
+                  ? `${Math.min(Math.max(i - FIRST, 0), 5) * 40}ms`
+                  : i >= from && i < shown ? `${(i - from) * 90}ms` : undefined,
+              } as React.CSSProperties}
+              className={`${i >= shown ? "hidden" : "flex"} ${
+                closing && i >= FIRST ? "pop-out" : i >= from && i < shown ? "pop-in" : ""
+              } float-card group flex-col overflow-hidden rounded-[28px] border border-edge bg-card shadow-[0_1px_2px_rgba(27,47,75,0.04),0_16px_40px_-20px_rgba(27,47,75,0.2)] hover:border-steel/30 hover:shadow-[0_28px_56px_-24px_rgba(27,47,75,0.38)]`}
             >
-              {x.image_url ? (
-                <a
-                  href={x.image_url}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  aria-label={`Open ${x.title} image in full size`}
-                  className="block aspect-[16/10] overflow-hidden bg-mist"
-                >
-                  {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img src={x.image_url} alt={`${x.title} project preview`} loading="lazy" className="h-full w-full object-cover object-top transition-transform duration-500 motion-safe:group-hover:scale-105" />
-                </a>
-              ) : (
-                <Art i={i} />
-              )}
-              <div className="flex flex-1 flex-col p-6">
+              <div className="p-3 pb-0">
+                {x.image_url ? (
+                  <a
+                    href={x.image_url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    aria-label={`Open ${x.title} image in full size`}
+                    className="block aspect-[16/10] overflow-hidden rounded-2xl bg-mist"
+                  >
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img src={x.image_url} alt={`${x.title} project preview`} loading="lazy" className="h-full w-full object-cover object-top transition-transform duration-500 motion-safe:group-hover:scale-105" />
+                  </a>
+                ) : (
+                  <div className="overflow-hidden rounded-2xl">
+                    <Art i={i} />
+                  </div>
+                )}
+              </div>
+              <div className="flex flex-1 flex-col px-6 pb-5 pt-5">
                 {meta && <p className="text-sm font-medium text-steel">{meta}</p>}
                 <h3 className="mt-2 font-display text-2xl font-semibold leading-tight tracking-tight text-navy">{x.title}</h3>
                 {x.description && <Description text={x.description} />}
@@ -137,15 +213,28 @@ export default function ProjectList({ projects }: { projects: Project[] }) {
           );
         })}
       </div>
-      {shown < projects.length && (
-        <div className="mt-12 flex justify-center">
-          <button
-            type="button"
-            onClick={() => setShown((n) => n + STEP)}
-            className="inline-flex min-h-11 items-center justify-center rounded-full border-2 border-navy px-8 font-semibold text-navy transition-colors hover:bg-navy hover:text-white"
-          >
-            View more
-          </button>
+      {projects.length > FIRST && (
+        <div className="mt-12 flex flex-wrap justify-center gap-3">
+          {shown < projects.length && (
+            <button
+              type="button"
+              onClick={more}
+              disabled={closing}
+              className="inline-flex min-h-11 items-center justify-center rounded-full bg-navy px-8 font-semibold text-white transition duration-200 hover:bg-steel active:scale-[0.97] disabled:opacity-60"
+            >
+              View more
+            </button>
+          )}
+          {shown > FIRST && (
+            <button
+              type="button"
+              onClick={less}
+              disabled={closing}
+              className="inline-flex min-h-11 items-center justify-center rounded-full border border-edge bg-white px-8 font-semibold text-navy transition duration-200 hover:border-navy active:scale-[0.97] disabled:opacity-60"
+            >
+              Show less
+            </button>
+          )}
         </div>
       )}
     </>

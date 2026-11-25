@@ -3,88 +3,19 @@ import Image from "next/image";
 import ProjectList from "./ProjectList";
 import Reveal from "./Reveal";
 import Intro from "./Intro";
+import HeroTrend from "./HeroTrend";
+import ThemeToggle from "./ThemeToggle";
 export const dynamic = "force-dynamic";
 
 const wrap = "mx-auto w-full max-w-[1200px] px-6";
 const h2 =
   "font-display text-[clamp(2rem,4.5vw,3rem)] font-semibold leading-[1.1] tracking-[-0.02em]";
 const btn =
-  "inline-flex min-h-11 items-center justify-center rounded-full px-6 font-semibold transition-colors";
-const peachBtn = `${btn} bg-peach text-navy hover:bg-white`;
-const ghostBtn = `${btn} border border-white/40 text-white hover:bg-white hover:text-navy`;
-
-function Art({ i }: { i: number }) {
-  const v = i % 3;
-  const bg = ["bg-navy", "bg-steel", "bg-cream"][v];
-  return (
-    <div className={`${bg} aspect-[16/10]`} aria-hidden>
-      <svg
-        viewBox="0 0 400 200"
-        className="h-full w-full"
-        preserveAspectRatio="xMidYMid slice"
-      >
-        {v === 0 && (
-          <>
-            {[50, 80, 60, 110, 90, 130].map((h, k) => (
-              <rect
-                key={k}
-                x={40 + k * 56}
-                y={170 - h}
-                width="34"
-                height={h}
-                rx="6"
-                fill={k === 5 ? "#E9A66B" : "#C3D0E0"}
-                opacity={k === 5 ? 1 : 0.45}
-              />
-            ))}
-            <polyline
-              points="57,95 113,70 169,85 225,45 281,60 337,30"
-              fill="none"
-              stroke="#fff"
-              strokeWidth="3"
-              strokeLinejoin="round"
-              strokeLinecap="round"
-            />
-          </>
-        )}
-        {v === 1 && (
-          <>
-            <path
-              d="M0 150 L60 120 120 132 180 85 240 100 300 55 360 70 400 40 V200 H0Z"
-              fill="#fff"
-              opacity="0.22"
-            />
-            <polyline
-              points="0,150 60,120 120,132 180,85 240,100 300,55 360,70 400,40"
-              fill="none"
-              stroke="#fff"
-              strokeWidth="3"
-              strokeLinejoin="round"
-            />
-          </>
-        )}
-        {v === 2 &&
-          (
-            [
-              [300, "#1B2F4B"],
-              [210, "#2F5D8C"],
-              [130, "#E9A66B"],
-            ] as const
-          ).map(([w, c], k) => (
-            <rect
-              key={k}
-              x="40"
-              y={40 + k * 46}
-              width={w}
-              height="26"
-              rx="13"
-              fill={c}
-            />
-          ))}
-      </svg>
-    </div>
-  );
-}
+  "inline-flex min-h-11 items-center justify-center rounded-full px-6 font-semibold transition duration-200 active:scale-[0.97]";
+const whiteBtn = `${btn} btn-light bg-white text-navy hover:bg-mist`;
+const ghostBtn = `${btn} border border-white/25 text-white hover:border-white hover:bg-white/10`;
+const darkBtn = `${btn} bg-navy text-white hover:bg-steel`;
+const lineBtn = `${btn} border border-edge bg-white text-navy hover:border-navy hover:bg-mist/60`;
 
 export default async function Home() {
   const [prof, skills, projects, exps, hl, certs] = await Promise.all([
@@ -148,17 +79,14 @@ export default async function Home() {
     (a, b) => Number(a[0] === "Other") - Number(b[0] === "Other"),
   );
   const grouped = skillGroups.length > 1;
-  const bar = ["bg-peach", "bg-steel", "bg-navy"];
+  const bar = ["bg-steel", "bg-navy", "bg-steel/40"];
 
   return (
-    <>
+    <div className="bg-white">
       <Intro name={p.name} label={p.hero_label} />
-      <header className="sticky top-0 z-50 border-b border-white/10 bg-navy">
-        <div className={`${wrap} flex items-center justify-between py-4`}>
-          <a
-            href="#top"
-            className="flex min-h-11 items-center gap-3 text-white"
-          >
+      <header className="sticky top-0 z-50 px-4 pt-4">
+        <div className="mx-auto flex max-w-[1200px] items-center justify-between rounded-full border border-edge bg-white/85 py-2 pl-3 pr-2 shadow-[0_10px_30px_-14px_rgba(27,47,75,0.25)] backdrop-blur-md">
+          <a href="#top" className="flex min-h-11 items-center gap-3 text-navy">
             <Image
               id="site-avatar"
               src="/fotoselwin.jpeg"
@@ -167,95 +95,74 @@ export default async function Home() {
               height={80}
               className="intro-hide h-10 w-10 rounded-full object-cover"
             />
-            <span
-              id="site-name"
-              className="intro-hide font-display text-xl font-semibold"
-            >
+            <span id="site-name" className="intro-hide font-display text-lg font-semibold">
               {p.name}
             </span>
           </a>
-          <nav className="hidden items-center gap-2 md:flex">
+          <nav className="hidden items-center gap-1 md:flex">
             {nav.map(([l, h]) => (
               <a
                 key={h}
                 href={h}
-                className="inline-flex min-h-11 items-center px-4 font-medium text-onnavy hover:text-white"
+                className="inline-flex min-h-11 items-center rounded-full px-4 font-medium text-navy/70 transition-colors hover:bg-mist hover:text-navy"
               >
                 {l}
               </a>
             ))}
             {hasContact && (
-              <a href="#kontak" className={peachBtn}>
+              <a href="#kontak" className={`${darkBtn} ml-1`}>
                 Contact me
               </a>
             )}
+            <ThemeToggle className="ml-1" />
           </nav>
-          <details className="relative md:hidden">
-            <summary className="flex min-h-11 cursor-pointer list-none items-center rounded-full border border-white/40 px-5 font-semibold text-white">
-              Menu
-            </summary>
-            <div className="absolute right-0 top-14 z-20 flex w-56 flex-col rounded-3xl border border-edge bg-card p-3 font-medium text-navy shadow-lg">
-              {nav.map(([l, h]) => (
-                <a key={h} href={h} className="flex min-h-11 items-center px-4">
-                  {l}
-                </a>
-              ))}
-              {hasContact && (
-                <a href="#kontak" className={`${peachBtn} mt-2`}>
-                  Contact me
-                </a>
-              )}
-            </div>
-          </details>
+          <div className="flex items-center gap-2 md:hidden">
+            <ThemeToggle />
+            <details className="relative">
+              <summary className="flex min-h-11 cursor-pointer list-none items-center rounded-full border border-edge px-5 font-semibold text-navy">
+                Menu
+              </summary>
+              <div className="absolute right-0 top-14 z-20 flex w-56 flex-col rounded-3xl border border-edge bg-card p-3 font-medium text-navy shadow-lg">
+                {nav.map(([l, h]) => (
+                  <a key={h} href={h} className="flex min-h-11 items-center px-4">
+                    {l}
+                  </a>
+                ))}
+                {hasContact && (
+                  <a href="#kontak" className={`${darkBtn} mt-2`}>
+                    Contact me
+                  </a>
+                )}
+              </div>
+            </details>
+          </div>
         </div>
       </header>
 
-      <div className="relative overflow-hidden bg-navy">
+      <div className="relative overflow-hidden bg-white">
         <div aria-hidden className="pointer-events-none absolute inset-0">
-          <div className="hero-grid absolute inset-0" />
-          <div className="hero-glow absolute -left-40 top-1/4 h-[32rem] w-[32rem] rounded-full" />
-          <svg
-            className="hero-trend absolute inset-x-0 bottom-0 h-3/5 w-full"
-            viewBox="0 0 1200 300"
-            preserveAspectRatio="none"
-          >
-            <path
-              className="hero-area"
-              d="M0 240 C120 220 180 140 300 160 S480 250 600 190 S800 60 920 100 S1100 150 1200 60 L1200 300 L0 300 Z"
-              fill="rgba(233,166,107,0.12)"
-            />
-            <path
-              className="hero-line"
-              vectorEffect="non-scaling-stroke"
-              d="M0 240 C120 220 180 140 300 160 S480 250 600 190 S800 60 920 100 S1100 150 1200 60"
-              fill="none"
-              stroke="#E9A66B"
-              strokeWidth="3"
-              strokeLinecap="round"
-            />
-            <path
-              className="hero-pulse"
-              pathLength={1}
-              vectorEffect="non-scaling-stroke"
-              d="M0 240 C120 220 180 140 300 160 S480 250 600 190 S800 60 920 100 S1100 150 1200 60"
-              fill="none"
-              stroke="#FFD9B0"
-              strokeWidth="4"
-              strokeLinecap="round"
-            />
-          </svg>
+          <HeroTrend />
         </div>
         <section
           id="top"
-          className={`${wrap} relative grid scroll-mt-4 items-center gap-12 pb-20 pt-10 md:grid-cols-2 md:gap-16 md:pb-28 md:pt-16`}
+          className={`${wrap} relative grid scroll-mt-4 items-center gap-12 pb-20 pt-12 md:grid-cols-[1.1fr_0.9fr] md:gap-16 md:pb-28 md:pt-20`}
         >
           <div>
-            {p.hero_label && <p className="label text-peach">{p.hero_label}</p>}
-            <h1 className="mt-5 font-display text-[clamp(2.5rem,5.5vw,4.125rem)] font-bold leading-[1.05] tracking-[-0.02em] text-white">
+            {p.hero_label && (
+              <p className="rise label text-steel" style={{ "--d": "0s" } as React.CSSProperties}>
+                {p.hero_label}
+              </p>
+            )}
+            <h1
+              className="rise mt-5 font-display text-[clamp(2.5rem,5.5vw,4.125rem)] font-bold leading-[1.1] tracking-[-0.02em] text-navy"
+              style={{ "--d": "0.1s" } as React.CSSProperties}
+            >
               {at >= 0 ? (
                 <>
                   {p.headline.slice(0, at)}
-                  <span className="text-peach">{p.headline_accent}</span>
+                  <span className="rounded-2xl bg-steel/10 px-3 [box-decoration-break:clone]">
+                    {p.headline_accent}
+                  </span>
                   {p.headline.slice(at + p.headline_accent.length)}
                 </>
               ) : (
@@ -263,57 +170,105 @@ export default async function Home() {
               )}
             </h1>
             {p.bio && (
-              <p className="mt-6 max-w-xl whitespace-pre-line text-lg leading-relaxed text-onnavy">
+              <p
+                className="rise mt-6 max-w-xl whitespace-pre-line text-lg leading-relaxed"
+                style={{ "--d": "0.2s" } as React.CSSProperties}
+              >
                 {p.bio}
               </p>
             )}
-            <div className="mt-9 flex flex-wrap gap-3">
+            <div className="rise mt-9 flex flex-wrap gap-3" style={{ "--d": "0.3s" } as React.CSSProperties}>
               {projects.length > 0 && (
-                <a href="#projek" className={peachBtn}>
+                <a href="#projek" className={darkBtn}>
                   View projects
                 </a>
               )}
               {hasContact && (
-                <a href="#kontak" className={ghostBtn}>
+                <a href="#kontak" className={lineBtn}>
                   Get in touch
                 </a>
               )}
             </div>
           </div>
-          <div className="overflow-hidden rounded-3xl border border-white/15 bg-white/[0.06] p-2 md:p-3">
-            <Image
-              src="/fotoselwin.jpeg"
-              alt="`Portrait of ${p.name}`"
-              width={1600}
-              height={1000}
-              priority
-              className="h-auto w-full rounded-2xl"
-            />
+          <div className="rise relative" style={{ "--d": "0.25s", "--rot": "4deg" } as React.CSSProperties}>
+            <div
+              aria-hidden
+              className="float-a absolute -left-4 bottom-10 z-10 hidden rounded-2xl border border-edge bg-white p-3 shadow-[0_20px_40px_-20px_rgba(27,47,75,0.35)] sm:block md:-left-8"
+            >
+              <svg viewBox="0 0 80 48" width="80" height="48">
+                {[18, 30, 22, 38, 28].map((h, k) => (
+                  <rect key={k} x={4 + k * 15} y={46 - h} width="10" height={h} rx="3" fill={k === 3 ? "#2F5D8C" : "#C3D0E0"} />
+                ))}
+              </svg>
+            </div>
+            <div
+              aria-hidden
+              className="float-b absolute -right-3 top-8 z-10 hidden rounded-2xl border border-edge bg-white p-3 shadow-[0_20px_40px_-20px_rgba(27,47,75,0.35)] sm:block md:-right-6"
+            >
+              <svg viewBox="0 0 80 40" width="80" height="40">
+                <polyline points="2,32 18,22 32,26 48,12 62,16 78,4" fill="none" stroke="#2F5D8C" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" />
+                <circle cx="78" cy="4" r="4" fill="#1B2F4B" />
+              </svg>
+            </div>
+            <div className="float-slow rounded-[32px] border border-edge bg-white p-3 shadow-[0_30px_60px_-30px_rgba(27,47,75,0.35)]">
+              <Image
+                src="/fotoselwin.jpeg"
+                alt={`Portrait of ${p.name}`}
+                width={1600}
+                height={1000}
+                priority
+                className="h-auto w-full rounded-3xl"
+              />
+            </div>
           </div>
         </section>
       </div>
 
+      {projects.length > 0 && (
+        <section id="projek" className="scroll-mt-4 overflow-x-clip bg-mist py-20 md:py-28">
+          <div className={wrap}>
+            <Reveal>
+              <p className="label text-steel">Selected projects</p>
+              <h2 className={`${h2} mb-12 mt-3 max-w-2xl text-navy`}>
+                Work that speaks through data.
+              </h2>
+            </Reveal>
+            <ProjectList
+              projects={projects.map((x: any) => ({
+                id: x.id,
+                title: x.title,
+                description: x.description,
+                tech: x.tech,
+                kind: x.kind,
+                year: x.year,
+                url: x.url,
+                repo: x.repo,
+                image_url: x.image_url ?? "",
+              }))}
+            />
+          </div>
+        </section>
+      )}
+
       {skills.length > 0 && (
-        <section id="keahlian" className="scroll-mt-4 bg-steel">
+        <section id="keahlian" className="scroll-mt-4 bg-white">
           <Reveal>
-            <div className={`${wrap} py-12`}>
-              <p className="label text-white">Skills</p>
-              <dl className="mt-6 divide-y divide-white/15">
+            <div className={`${wrap} py-16 md:py-20`}>
+              <p className="label text-steel">Skills</p>
+              <dl className="mt-6 divide-y divide-edge">
                 {skillGroups.map(([cat, list]) => (
                   <div
                     key={cat}
                     className={`grid gap-3 py-5 first:pt-0 last:pb-0 md:gap-8 ${grouped ? "md:grid-cols-[13rem_1fr]" : ""}`}
                   >
                     {grouped && (
-                      <dt className="text-sm font-semibold text-white">
-                        {cat}
-                      </dt>
+                      <dt className="text-sm font-semibold text-navy">{cat}</dt>
                     )}
                     <dd className="flex flex-wrap gap-2">
                       {list.map((s: any) => (
                         <span
                           key={s.id}
-                          className="rounded-full border border-white/35 px-4 py-1.5 text-sm font-medium text-white"
+                          className="rounded-full border border-edge bg-mist/60 px-4 py-1.5 text-sm font-medium text-navy"
                         >
                           {s.name}
                         </span>
@@ -327,33 +282,8 @@ export default async function Home() {
         </section>
       )}
 
-      {projects.length > 0 && (
-        <section id="projek" className="scroll-mt-4 bg-mist py-20 md:py-28">
-          <div className={wrap}>
-            <Reveal>
-              <p className="label text-steel">Selected projects</p>
-              <h2 className={`${h2} mb-12 mt-3 max-w-2xl text-navy`}>
-                Work that speaks through data.
-              </h2>
-              <ProjectList
-                projects={projects.map((x: any) => ({
-                  id: x.id,
-                  title: x.title,
-                  description: x.description,
-                  tech: x.tech,
-                  kind: x.kind,
-                  year: x.year,
-                  url: x.url,
-                  repo: x.repo,
-                  image_url: x.image_url ?? "",
-                }))}
-              />
-            </Reveal>
-          </div>
-        </section>
-      )}
-
       {hasAbout && (
+        <div className="bg-mist/60">
         <section
           id="tentang"
           className={`${wrap} grid scroll-mt-4 gap-10 py-20 md:grid-cols-[5fr_7fr] md:gap-16 md:py-28`}
@@ -363,18 +293,22 @@ export default async function Home() {
             {p.about_title && (
               <h2 className={`${h2} mt-3 text-navy`}>{p.about_title}</h2>
             )}
-            <div className="relative mt-8 hidden max-w-xs md:block">
-              <div
-                aria-hidden
-                className="absolute inset-0 translate-x-2 translate-y-2 rounded-3xl border-2 border-peach bg-peach/20"
-              />
+            <div className="relative mt-10 hidden max-w-xs md:block">
+              <div aria-hidden className="absolute inset-0 -rotate-6 rounded-[28px] bg-steel/15" />
+              <div aria-hidden className="absolute inset-0 translate-x-3 translate-y-3 rounded-[28px] border-2 border-steel/40" />
               <Image
                 src="/fotoselwin3.jpeg"
                 alt={`Photo of ${p.name}`}
                 width={600}
                 height={750}
-                className="relative aspect-[4/5] h-auto w-full rounded-3xl object-cover object-top shadow-xl shadow-navy/25"
+                className="relative aspect-[4/5] h-auto w-full rounded-[28px] object-cover object-top shadow-[0_30px_60px_-30px_rgba(27,47,75,0.4)]"
               />
+              {p.hero_label && (
+                <div className="float-slow absolute -bottom-5 -right-6 z-10 flex items-center gap-2 rounded-2xl border border-edge bg-card px-4 py-2.5 text-sm font-semibold text-navy shadow-[0_20px_40px_-20px_rgba(27,47,75,0.4)]">
+                  <span aria-hidden className="h-2 w-2 rounded-full bg-steel" />
+                  {p.hero_label}
+                </div>
+              )}
             </div>
           </div>
           <Reveal>
@@ -434,10 +368,11 @@ export default async function Home() {
             )}
           </Reveal>
         </section>
+        </div>
       )}
 
       {certs.length > 0 && (
-        <section id="sertifikat" className="scroll-mt-4 bg-mist py-20 md:py-28">
+        <section id="sertifikat" className="scroll-mt-4 bg-white py-20 md:py-28">
           <div className={wrap}>
             <Reveal>
               <p className="label text-steel">Certificates</p>
@@ -512,47 +447,87 @@ export default async function Home() {
         </section>
       )}
 
-      {hasContact && (
-        <section id="kontak" className={`${wrap} scroll-mt-4 pb-16 ${certs.length > 0 ? "pt-16 md:pt-24" : ""}`}>
-          <Reveal>
-            <div className="relative overflow-hidden rounded-[32px] bg-navy px-6 py-14 text-center md:px-16 md:py-20">
-              <div aria-hidden className="pointer-events-none absolute inset-0">
-                <div className="cta-grid absolute inset-0" />
-                <div className="cta-glow absolute left-1/2 top-1/2 h-80 w-80 -translate-x-1/2 -translate-y-1/2 rounded-full" />
-              </div>
-              <div className="relative">
-                <h2 className={`${h2} mx-auto max-w-2xl text-white`}>
-                  {p.contact_title || "Have data that needs to be made clear?"}
-                </h2>
-                {p.contact_text && (
-                  <p className="mx-auto mt-4 max-w-xl text-lg text-onnavy">
-                    {p.contact_text}
-                  </p>
-                )}
-                <div className="mt-9 flex flex-wrap justify-center gap-3">
-                  {p.email && (
-                    <a
-                      href={`mailto:${p.email}`}
-                      className={`${peachBtn} break-all`}
-                    >
-                      {p.email}
-                    </a>
-                  )}
-                  {social.map(([l, u]) => (
-                    <a key={l} href={u} className={ghostBtn}>
-                      {l}
-                    </a>
+      <div className={certs.length > 0 ? "bg-mist/60" : "bg-white"}>
+        {hasContact && (
+          <section id="kontak" className={`${wrap} scroll-mt-4 pb-4 pt-16 md:pt-24`}>
+            <Reveal>
+              <div className="cta-card relative overflow-hidden rounded-[32px] bg-navy px-6 pt-20 text-center md:px-16 md:pt-28">
+                <div aria-hidden className="pointer-events-none absolute inset-0">
+                  {[0, 2, 4].map((d) => (
+                    <span
+                      key={d}
+                      className="ring-pulse absolute left-1/2 top-[42%] h-[34rem] w-[34rem] rounded-full border border-white/15"
+                      style={{ animationDelay: `${d}s` }}
+                    />
                   ))}
+                  <div className="float-a absolute left-[7%] top-[18%] hidden rounded-2xl border border-white/15 bg-white/10 p-3 backdrop-blur-sm md:block">
+                    <svg viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="white" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+                      <rect x="3" y="5" width="18" height="14" rx="3" />
+                      <path d="M3.5 7.5 12 13l8.5-5.5" />
+                    </svg>
+                  </div>
+                  <div className="float-b absolute right-[7%] top-[46%] hidden rounded-2xl border border-white/15 bg-white/10 p-3 backdrop-blur-sm md:block">
+                    <svg viewBox="0 0 80 40" width="72" height="36" fill="none">
+                      <polyline points="2,32 18,22 32,26 48,12 62,16 78,4" stroke="white" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" />
+                      <circle cx="78" cy="4" r="4" fill="white" />
+                    </svg>
+                  </div>
+                </div>
+
+                <div className="relative">
+                  <h2 className={`${h2} mx-auto max-w-2xl text-white`}>
+                    {p.contact_title || "Have data that needs to be made clear?"}
+                  </h2>
+                  {p.contact_text && (
+                    <p className="mx-auto mt-5 max-w-xl text-lg leading-relaxed text-onnavy">
+                      {p.contact_text}
+                    </p>
+                  )}
+                  <div className="mt-10 flex flex-wrap justify-center gap-3">
+                    {p.email && (
+                      <a href={`mailto:${p.email}`} className={`${whiteBtn} gap-2 break-all`}>
+                        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                          <rect x="3" y="5" width="18" height="14" rx="3" />
+                          <path d="M3.5 7.5 12 13l8.5-5.5" />
+                        </svg>
+                        {p.email}
+                      </a>
+                    )}
+                    {social.map(([l, u]) => (
+                      <a key={l} href={u} target="_blank" rel="noopener noreferrer" className={`${ghostBtn} group gap-2`}>
+                        {l}
+                        <span aria-hidden className="transition-transform duration-200 group-hover:-translate-y-0.5 group-hover:translate-x-0.5">↗</span>
+                      </a>
+                    ))}
+                  </div>
+
+                  {skills.length > 0 && (
+                    <div
+                      aria-hidden
+                      className="mt-20 overflow-hidden border-t border-white/10 py-6 [mask-image:linear-gradient(90deg,transparent,#000_12%,#000_88%,transparent)]"
+                    >
+                      <div className="marquee flex w-max">
+                        {[...skills, ...skills].map((s: any, i: number) => (
+                          <span
+                            key={i}
+                            className="mr-3 shrink-0 rounded-full border border-white/15 px-4 py-1.5 text-sm font-medium text-white/60"
+                          >
+                            {s.name}
+                          </span>
+                        ))}
+                      </div>
+                    </div>
+                  )}
                 </div>
               </div>
-            </div>
-          </Reveal>
-        </section>
-      )}
+            </Reveal>
+          </section>
+        )}
 
-      <footer className={`${wrap} py-8 text-sm`}>
-        {p.footer_note || `© ${new Date().getFullYear()} ${p.name}`}
-      </footer>
-    </>
+        <footer className={`${wrap} py-8 text-sm`}>
+          {p.footer_note || `© ${new Date().getFullYear()} ${p.name}`}
+        </footer>
+      </div>
+    </div>
   );
 }

@@ -271,3 +271,155 @@ html {
 html[data-intro-active] {
   background: var(--color-navy);
 }
+
+/* Hero: elemen melayang masuk lalu mendarat. Menunggu intro selesai. */
+@keyframes rise {
+  from { opacity: 0; transform: translate3d(0, 36px, 0) rotate(var(--rot, 0deg)) scale(0.97); }
+  to   { opacity: 1; transform: none; }
+}
+.rise {
+  animation: rise 1s cubic-bezier(0.22, 1, 0.36, 1) both;
+  animation-delay: var(--d, 0s);
+}
+html[data-intro-active] .rise { animation-play-state: paused; }
+
+/* Foto hero mengambang pelan */
+@keyframes bob {
+  0%, 100% { transform: translateY(0); }
+  50%      { transform: translateY(-10px); }
+}
+.float-slow { animation: bob 6s ease-in-out infinite; }
+
+/* Kartu mini di sekitar foto hero */
+@keyframes drift-a {
+  0%, 100% { transform: translate3d(0, 0, 0) rotate(-4deg); }
+  50%      { transform: translate3d(6px, -14px, 0) rotate(2deg); }
+}
+@keyframes drift-b {
+  0%, 100% { transform: translate3d(0, 0, 0) rotate(5deg); }
+  50%      { transform: translate3d(-8px, 12px, 0) rotate(-2deg); }
+}
+.float-a { animation: drift-a 7s ease-in-out infinite; }
+.float-b { animation: drift-b 8s ease-in-out -2s infinite; }
+
+/* Kartu projek: terpencar & miring, lalu kembali ke posisi saat di-scroll.
+   --p (0..1) diisi oleh ProjectList.tsx. 1 = posisi normal. */
+.float-card {
+  --p: 1;
+  transform:
+    translate3d(calc(var(--x, 0px) * (1 - var(--p))), calc(var(--y, 0px) * (1 - var(--p))), 0)
+    rotate(calc(var(--r, 0deg) * (1 - var(--p))));
+  opacity: calc(0.25 + 0.75 * var(--p));
+  will-change: transform, opacity;
+  transition: box-shadow 300ms ease, border-color 300ms ease;
+}
+
+/* Tombol "View more": kartu baru melayang naik lalu mendarat, bergantian */
+@keyframes pop-in {
+  from { opacity: 0; translate: 0 80px; rotate: var(--r, 0deg); scale: 0.94; }
+  to   { opacity: 1; translate: 0 0; rotate: 0deg; scale: 1; }
+}
+@keyframes pop-out {
+  to { opacity: 0; translate: 0 40px; scale: 0.95; }
+}
+.pop-in  { animation: pop-in 0.8s cubic-bezier(0.22, 1, 0.36, 1) backwards; }
+.pop-out { animation: pop-out 0.35s ease-in forwards; }
+
+/* Kartu Contact: cincin melebar pelan dari tengah */
+@keyframes ring-out {
+  from { scale: 0.3; opacity: 0.7; }
+  to   { scale: 1.5; opacity: 0; }
+}
+.ring-pulse {
+  translate: -50% -50%;
+  opacity: 0;
+  animation: ring-out 6s ease-out infinite;
+}
+
+/* Kartu Contact: deretan skill berjalan pelan */
+@keyframes marquee {
+  to { transform: translateX(-50%); }
+}
+.marquee { animation: marquee 45s linear infinite; }
+
+@media (prefers-reduced-motion: reduce) {
+  .marquee { animation: none; }
+  .ring-pulse { animation: none; }
+  .rise, .float-slow, .float-a, .float-b, .pop-in, .pop-out { animation: none; }
+  .float-card { transform: none; opacity: 1; }
+}
+
+/* ===================== TEMA GELAP =====================
+   Aktif saat <html data-theme="dark"> (diatur oleh ThemeToggle.tsx).
+   Default terang. Palet: halaman #0A1020, section #12203A / #0E182B, kartu #16233B. */
+[data-theme="dark"] { color-scheme: dark; }
+[data-theme="dark"] body { background: #0A1020; color: #AEBBD0; }
+
+/* permukaan */
+[data-theme="dark"] .bg-white { background-color: #0A1020; }
+[data-theme="dark"] .bg-white\/85 { background-color: rgb(10 16 32 / 0.85); }
+[data-theme="dark"] .bg-mist { background-color: #12203A; }
+[data-theme="dark"] .bg-mist\/60 { background-color: #0E182B; }
+[data-theme="dark"] .hover\:bg-mist:hover,
+[data-theme="dark"] .hover\:bg-mist\/60:hover { background-color: #12203A; }
+[data-theme="dark"] .bg-card { background-color: #16233B; }
+[data-theme="dark"] .border-edge { border-color: #243450; }
+[data-theme="dark"] .divide-edge > :not(:last-child) { border-color: #243450; }
+
+/* teks */
+[data-theme="dark"] .text-navy { color: #E8EEF7; }
+[data-theme="dark"] .text-navy\/70 { color: rgb(232 238 247 / 0.7); }
+[data-theme="dark"] .hover\:text-navy:hover { color: #fff; }
+[data-theme="dark"] .text-steel { color: #8FB2DB; }
+[data-theme="dark"] :is(p, dd, li):not([class*="text-white"]):not([class*="text-steel"]):not([class*="text-navy"]):not([class*="text-onnavy"]) {
+  color: #AEBBD0;
+}
+
+/* aksen biru */
+[data-theme="dark"] .bg-steel\/10 { background-color: rgb(111 163 224 / 0.16); }
+[data-theme="dark"] .bg-steel\/15 { background-color: rgb(111 163 224 / 0.12); }
+[data-theme="dark"] .border-steel\/40,
+[data-theme="dark"] .hover\:border-steel\/30:hover { border-color: rgb(111 163 224 / 0.35); }
+[data-theme="dark"] .ring-white { --tw-ring-color: #0A1020; }
+
+/* tombol solid: terang di atas gelap */
+[data-theme="dark"] .bg-navy { background-color: #E8EEF7; color: #0A1020; }
+[data-theme="dark"] .hover\:bg-steel:hover { background-color: #C5D6EC; }
+[data-theme="dark"] .hover\:bg-navy:hover { background-color: #E8EEF7; color: #0A1020; }
+[data-theme="dark"] .hover\:border-navy:hover { border-color: #E8EEF7; }
+[data-theme="dark"] .btn-light { background-color: #fff; color: #0A1020; }
+[data-theme="dark"] .btn-light:hover { background-color: #DCE6F3; }
+
+/* kartu Contact tetap biru tua */
+[data-theme="dark"] .cta-card { background-color: #13294B; color: #fff; }
+
+/* garis tren hero */
+[data-theme="dark"] .trend-base { stroke: #22365A; }
+[data-theme="dark"] .trend-lead-hi { stop-color: #CFE3FA; }
+[data-theme="dark"] .trend-follow-hi { stop-color: #5E9BE0; }
+
+/* transisi warna halus saat tema diganti (kelas dipasang sebentar oleh ThemeToggle) */
+html.theme-anim,
+html.theme-anim *,
+html.theme-anim *::before,
+html.theme-anim *::after {
+  transition: background-color 0.35s ease, color 0.35s ease, border-color 0.35s ease,
+    fill 0.35s ease, stroke 0.35s ease;
+}
+
+/* ===== Halaman login admin ===== */
+.alert-error { background: #fdf1f1; border-color: #f3c9c9; color: #9b2c2c; }
+[data-theme="dark"] .alert-error {
+  background: rgb(155 44 44 / 0.16);
+  border-color: rgb(248 113 113 / 0.3);
+  color: #fca5a5;
+}
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  20% { transform: translateX(-8px); }
+  40% { transform: translateX(7px); }
+  60% { transform: translateX(-5px); }
+  80% { transform: translateX(3px); }
+}
+.shake { animation: shake 0.45s ease-in-out; }
+@media (prefers-reduced-motion: reduce) { .shake { animation: none; } }
