@@ -271,6 +271,7 @@ html {
 html[data-intro-active] {
   background: var(--color-navy);
 }
+/* ===== GANTI seluruh blok tambahan sebelumnya di app/globals.css dengan ini ===== */
 
 /* Hero: elemen melayang masuk lalu mendarat. Menunggu intro selesai. */
 @keyframes rise {
@@ -423,3 +424,51 @@ html.theme-anim *::after {
 }
 .shake { animation: shake 0.45s ease-in-out; }
 @media (prefers-reduced-motion: reduce) { .shake { animation: none; } }
+
+/* ===== Fokus & isian formulir =====
+   Cincin fokus global (yang tadinya oranye) diganti biru steel.
+   Kolom isian memakai ring-nya sendiri (lihat kelas `focus:` di tiap input), jadi outline bawaan dimatikan. */
+html :focus-visible { outline: 2px solid #2f5d8c; outline-offset: 3px; }
+[data-theme="dark"] :focus-visible { outline-color: #8fb2da; }
+html input:focus-visible,
+html textarea:focus-visible,
+html select:focus-visible { outline: none; }
+input[type="checkbox"], input[type="radio"] { accent-color: #2f5d8c; }
+[data-theme="dark"] input[type="checkbox"],
+[data-theme="dark"] input[type="radio"] { accent-color: #8fb2da; }
+::selection { background: rgb(47 93 140 / 0.22); }
+[data-theme="dark"] ::selection { background: rgb(143 178 218 / 0.3); }
+
+/* ===== Admin ===== */
+.btn-danger { color: #9b2c2c; border-color: #ecc3c3; background: transparent; }
+.btn-danger:hover { background: #9b2c2c; border-color: #9b2c2c; color: #fff; }
+[data-theme="dark"] .btn-danger { color: #fca5a5; border-color: rgb(248 113 113 / 0.35); }
+[data-theme="dark"] .btn-danger:hover { background: #b91c1c; border-color: #b91c1c; color: #fff; }
+
+@keyframes panel-in {
+  from { opacity: 0; transform: translateY(-6px); }
+  to   { opacity: 1; transform: none; }
+}
+.panel-in { animation: panel-in 0.25s ease-out; }
+@media (prefers-reduced-motion: reduce) { .panel-in { animation: none; } }
+
+/* ===== Kata sorot hero yang berganti (RotatingWord.tsx) ===== */
+@keyframes word-wipe {
+  from { clip-path: inset(0 100% 0 0); }
+  to   { clip-path: inset(0 0 0 0); }
+}
+.word-wipe { animation: word-wipe 1.8s cubic-bezier(0.5, 0, 0.2, 1) both; } /* durasi diatur juga dari RotatingWord.tsx (SWEEP) */
+
+/* warna latar tiap kata (berputar bila kata lebih dari 5) */
+.hl-0 { background-color: #dce8f7; } /* biru */
+.hl-1 { background-color: #d5f0e8; } /* mint */
+.hl-2 { background-color: #e5e0f8; } /* lavender */
+.hl-3 { background-color: #fae1e8; } /* rose */
+.hl-4 { background-color: #fbf0c9; } /* kuning lembut */
+[data-theme="dark"] .hl-0 { background-color: rgb(111 163 224 / 0.24); }
+[data-theme="dark"] .hl-1 { background-color: rgb(94 207 176 / 0.2); }
+[data-theme="dark"] .hl-2 { background-color: rgb(167 139 250 / 0.24); }
+[data-theme="dark"] .hl-3 { background-color: rgb(244 114 182 / 0.2); }
+[data-theme="dark"] .hl-4 { background-color: rgb(250 204 21 / 0.18); }
+
+@media (prefers-reduced-motion: reduce) { .word-wipe { animation: none; } }

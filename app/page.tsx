@@ -5,6 +5,7 @@ import Reveal from "./Reveal";
 import Intro from "./Intro";
 import HeroTrend from "./HeroTrend";
 import ThemeToggle from "./ThemeToggle";
+import RotatingWord from "./RotatingWord";
 export const dynamic = "force-dynamic";
 
 const wrap = "mx-auto w-full max-w-[1200px] px-6";
@@ -63,9 +64,14 @@ export default async function Home() {
     hasAbout && ["About", "#tentang"],
     certs.length > 0 && ["Certificates", "#sertifikat"],
   ].filter(Boolean) as [string, string][];
-  const at = p.headline_accent
-    ? String(p.headline).indexOf(p.headline_accent)
-    : -1;
+  // Kata sorot: boleh lebih dari satu, dipisah koma (mis. "Clarity, Innovation, Impact"),
+  // lalu bergantian. Salah satunya harus ada di judul utama.
+  const accentWords: string[] = String(p.headline_accent || "")
+    .split(/[,\n|]/)
+    .map((w) => w.trim())
+    .filter(Boolean);
+  const matched = accentWords.find((w) => String(p.headline).includes(w)) ?? "";
+  const at = matched ? String(p.headline).indexOf(matched) : -1;
   const skillGroups: [string, any[]][] = [];
   skills.forEach((s: any) => {
     const cat = ["", "Keahlian", "Umum"].includes(s.category)
@@ -160,10 +166,8 @@ export default async function Home() {
               {at >= 0 ? (
                 <>
                   {p.headline.slice(0, at)}
-                  <span className="rounded-2xl bg-steel/10 px-3 [box-decoration-break:clone]">
-                    {p.headline_accent}
-                  </span>
-                  {p.headline.slice(at + p.headline_accent.length)}
+                  <RotatingWord words={accentWords} />
+                  {p.headline.slice(at + matched.length)}
                 </>
               ) : (
                 p.headline
@@ -254,7 +258,7 @@ export default async function Home() {
         <section id="keahlian" className="scroll-mt-4 bg-white">
           <Reveal>
             <div className={`${wrap} py-16 md:py-20`}>
-              <p className="label text-steel">Skills</p>
+              <p className="label text-steel">Skills & Technical Tools</p>
               <dl className="mt-6 divide-y divide-edge">
                 {skillGroups.map(([cat, list]) => (
                   <div
