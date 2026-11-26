@@ -102,7 +102,10 @@ export default async function Home() {
               height={80}
               className="intro-hide h-10 w-10 rounded-full object-cover"
             />
-            <span id="site-name" className="intro-hide font-display text-lg font-semibold">
+            <span
+              id="site-name"
+              className="intro-hide font-display text-lg font-semibold"
+            >
               {p.name}
             </span>
           </a>
@@ -131,7 +134,11 @@ export default async function Home() {
               </summary>
               <div className="absolute right-0 top-14 z-20 flex w-56 flex-col rounded-3xl border border-edge bg-card p-3 font-medium text-navy shadow-lg">
                 {nav.map(([l, h]) => (
-                  <a key={h} href={h} className="flex min-h-11 items-center px-4">
+                  <a
+                    key={h}
+                    href={h}
+                    className="flex min-h-11 items-center px-4"
+                  >
                     {l}
                   </a>
                 ))}
@@ -156,7 +163,10 @@ export default async function Home() {
         >
           <div>
             {p.hero_label && (
-              <p className="rise label text-steel" style={{ "--d": "0s" } as React.CSSProperties}>
+              <p
+                className="rise label text-steel"
+                style={{ "--d": "0s" } as React.CSSProperties}
+              >
                 {p.hero_label}
               </p>
             )}
@@ -182,7 +192,10 @@ export default async function Home() {
                 {p.bio}
               </p>
             )}
-            <div className="rise mt-9 flex flex-wrap gap-3" style={{ "--d": "0.3s" } as React.CSSProperties}>
+            <div
+              className="rise mt-9 flex flex-wrap gap-3"
+              style={{ "--d": "0.3s" } as React.CSSProperties}
+            >
               {projects.length > 0 && (
                 <a href="#projek" className={darkBtn}>
                   View projects
@@ -195,14 +208,25 @@ export default async function Home() {
               )}
             </div>
           </div>
-          <div className="rise relative" style={{ "--d": "0.25s", "--rot": "4deg" } as React.CSSProperties}>
+          <div
+            className="rise relative"
+            style={{ "--d": "0.25s", "--rot": "4deg" } as React.CSSProperties}
+          >
             <div
               aria-hidden
               className="float-a absolute -left-4 bottom-10 z-10 hidden rounded-2xl border border-edge bg-white p-3 shadow-[0_20px_40px_-20px_rgba(27,47,75,0.35)] sm:block md:-left-8"
             >
               <svg viewBox="0 0 80 48" width="80" height="48">
                 {[18, 30, 22, 38, 28].map((h, k) => (
-                  <rect key={k} x={4 + k * 15} y={46 - h} width="10" height={h} rx="3" fill={k === 3 ? "#2F5D8C" : "#C3D0E0"} />
+                  <rect
+                    key={k}
+                    x={4 + k * 15}
+                    y={46 - h}
+                    width="10"
+                    height={h}
+                    rx="3"
+                    fill={k === 3 ? "#2F5D8C" : "#C3D0E0"}
+                  />
                 ))}
               </svg>
             </div>
@@ -211,7 +235,14 @@ export default async function Home() {
               className="float-b absolute -right-3 top-8 z-10 hidden rounded-2xl border border-edge bg-white p-3 shadow-[0_20px_40px_-20px_rgba(27,47,75,0.35)] sm:block md:-right-6"
             >
               <svg viewBox="0 0 80 40" width="80" height="40">
-                <polyline points="2,32 18,22 32,26 48,12 62,16 78,4" fill="none" stroke="#2F5D8C" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" />
+                <polyline
+                  points="2,32 18,22 32,26 48,12 62,16 78,4"
+                  fill="none"
+                  stroke="#2F5D8C"
+                  strokeWidth="3"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                />
                 <circle cx="78" cy="4" r="4" fill="#1B2F4B" />
               </svg>
             </div>
@@ -230,7 +261,10 @@ export default async function Home() {
       </div>
 
       {projects.length > 0 && (
-        <section id="projek" className="scroll-mt-4 overflow-x-clip bg-mist py-12 md:py-16">
+        <section
+          id="projek"
+          className="scroll-mt-4 overflow-x-clip bg-mist py-12 md:py-16"
+        >
           <div className={wrap}>
             <Reveal>
               <p className="label text-steel">Selected projects</p>
@@ -259,7 +293,7 @@ export default async function Home() {
         <section id="keahlian" className="scroll-mt-4 bg-white">
           <Reveal>
             <div className={`${wrap} py-16 md:py-20`}>
-              <p className="label text-steel">Skills</p>
+              <p className="label text-steel">Skills & Technical Tools</p>
               <dl className="mt-6 divide-y divide-edge">
                 {skillGroups.map(([cat, list]) => (
                   <div
@@ -289,123 +323,142 @@ export default async function Home() {
 
       {hasAbout && (
         <div className="bg-mist/60">
-        <section
-          id="tentang"
-          className={`${wrap} grid scroll-mt-4 gap-10 py-20 md:grid-cols-[5fr_7fr] md:gap-16 md:py-28`}
-        >
-          <div className="md:sticky md:top-28 md:self-start">
-            <p className="label text-steel">About</p>
-            {p.about_title && (
-              <h2 className={`${h2} mt-3 text-navy`}>{p.about_title}</h2>
-            )}
-            <div className="relative mt-10 hidden max-w-xs md:block">
-              <div aria-hidden className="absolute inset-0 -rotate-6 rounded-[28px] bg-steel/15" />
-              <div aria-hidden className="absolute inset-0 translate-x-3 translate-y-3 rounded-[28px] border-2 border-steel/40" />
-              <Image
-                src="/fotoselwin3.jpeg"
-                alt={`Photo of ${p.name}`}
-                width={600}
-                height={750}
-                className="relative aspect-[4/5] h-auto w-full rounded-[28px] object-cover object-top shadow-[0_30px_60px_-30px_rgba(27,47,75,0.4)]"
-              />
-              {p.hero_label && (
-                <div className="float-slow absolute -bottom-5 -right-6 z-10 flex items-center gap-2 rounded-2xl border border-edge bg-card px-4 py-2.5 text-sm font-semibold text-navy shadow-[0_20px_40px_-20px_rgba(27,47,75,0.4)]">
-                  <span aria-hidden className="h-2 w-2 rounded-full bg-steel" />
-                  {p.hero_label}
+          <section
+            id="tentang"
+            className={`${wrap} grid scroll-mt-4 gap-10 py-20 md:grid-cols-[5fr_7fr] md:gap-16 md:py-28`}
+          >
+            <div className="md:sticky md:top-28 md:self-start">
+              <p className="label text-steel">About</p>
+              {p.about_title && (
+                <h2 className={`${h2} mt-3 text-navy`}>{p.about_title}</h2>
+              )}
+              <div className="relative mt-10 hidden max-w-xs md:block">
+                <div
+                  aria-hidden
+                  className="absolute inset-0 -rotate-6 rounded-[28px] bg-steel/15"
+                />
+                <div
+                  aria-hidden
+                  className="absolute inset-0 translate-x-3 translate-y-3 rounded-[28px] border-2 border-steel/40"
+                />
+                <Image
+                  src="/fotoselwin3.jpeg"
+                  alt={`Photo of ${p.name}`}
+                  width={600}
+                  height={750}
+                  className="relative aspect-[4/5] h-auto w-full rounded-[28px] object-cover object-top shadow-[0_30px_60px_-30px_rgba(27,47,75,0.4)]"
+                />
+                {p.hero_label && (
+                  <div className="float-slow absolute -bottom-5 -right-6 z-10 flex items-center gap-2 rounded-2xl border border-edge bg-card px-4 py-2.5 text-sm font-semibold text-navy shadow-[0_20px_40px_-20px_rgba(27,47,75,0.4)]">
+                    <span
+                      aria-hidden
+                      className="h-2 w-2 rounded-full bg-steel"
+                    />
+                    {p.hero_label}
+                  </div>
+                )}
+              </div>
+            </div>
+            <Reveal>
+              {paras.map((t, i) => (
+                <p
+                  key={i}
+                  className="mb-5 max-w-2xl text-lg leading-relaxed last:mb-0"
+                >
+                  {t}
+                </p>
+              ))}
+              {hl.length > 0 && (
+                <div className="mt-10 grid gap-6 sm:grid-cols-3">
+                  {hl.map((x: any, i: number) => (
+                    <div key={x.id}>
+                      <div
+                        aria-hidden
+                        className={`bar-shine h-1 rounded-full ${bar[i % 3]}`}
+                        style={{ "--d": `${i * 0.8}s` } as React.CSSProperties}
+                      />
+                      <div className="pt-4">
+                        <h3 className="font-display text-xl font-semibold text-navy">
+                          {x.title}
+                        </h3>
+                        <p className="mt-1">{x.text}</p>
+                      </div>
+                    </div>
+                  ))}
                 </div>
               )}
-            </div>
-          </div>
-          <Reveal>
-            {paras.map((t, i) => (
-              <p
-                key={i}
-                className="mb-5 max-w-2xl text-lg leading-relaxed last:mb-0"
-              >
-                {t}
-              </p>
-            ))}
-            {hl.length > 0 && (
-              <div className="mt-10 grid gap-6 sm:grid-cols-3">
-                {hl.map((x: any, i: number) => (
-                  <div key={x.id}>
-                    <div
-                      aria-hidden
-                      className={`bar-shine h-1 rounded-full ${bar[i % 3]}`}
-                      style={{ "--d": `${i * 0.8}s` } as React.CSSProperties}
-                    />
-                    <div className="pt-4">
-                      <h3 className="font-display text-xl font-semibold text-navy">
-                        {x.title}
-                      </h3>
-                      <p className="mt-1">{x.text}</p>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            )}
-            {exps.length > 0 && (
-              <div className="mt-12">
-                <p className="label mb-2 text-steel">Experience</p>
-                <ol>
-                  {exps.map((x: any) => (
-                    <li
-                      key={x.id}
-                      className="grid gap-1 border-t border-edge py-5 sm:grid-cols-[9rem_1fr] sm:gap-6"
-                    >
-                      <p className="text-sm tabular-nums">
-                        {x.start_date} – {x.end_date}
-                      </p>
-                      <div>
-                        <p className="font-semibold text-navy">
-                          {x.role}, {x.company}
+              {exps.length > 0 && (
+                <div className="mt-12">
+                  <p className="label mb-2 text-steel">Experience</p>
+                  <ol>
+                    {exps.map((x: any) => (
+                      <li
+                        key={x.id}
+                        className="grid gap-1 border-t border-edge py-5 sm:grid-cols-[9rem_1fr] sm:gap-6"
+                      >
+                        <p className="text-sm tabular-nums">
+                          {x.start_date} – {x.end_date}
                         </p>
-                        {x.description && (
-                          <p className="mt-1 whitespace-pre-line">
-                            {x.description}
+                        <div>
+                          <p className="font-semibold text-navy">
+                            {x.role}, {x.company}
                           </p>
-                        )}
-                      </div>
-                    </li>
-                  ))}
-                </ol>
-              </div>
-            )}
-          </Reveal>
-        </section>
+                          {x.description && (
+                            <p className="mt-1 whitespace-pre-line">
+                              {x.description}
+                            </p>
+                          )}
+                        </div>
+                      </li>
+                    ))}
+                  </ol>
+                </div>
+              )}
+            </Reveal>
+          </section>
         </div>
       )}
 
       {certs.length > 0 && (
-        <section id="sertifikat" className="scroll-mt-4 bg-white py-20 md:py-28">
+        <section
+          id="sertifikat"
+          className="scroll-mt-4 bg-white py-20 md:py-28"
+        >
           <div className={wrap}>
             <Reveal>
               <p className="label text-steel">Certificates</p>
-              <h2 className={`${h2} mb-12 mt-3 max-w-2xl text-navy`}>
+
+              <h2 className={`${h2} mb-8 mt-3 max-w-2xl text-navy sm:mb-12`}>
                 Continuous learning.
               </h2>
-              <div className="grid grid-cols-[repeat(auto-fit,minmax(min(100%,19rem),1fr))] gap-6">
+
+              <div className="grid grid-cols-3 gap-2 sm:gap-4 lg:gap-6">
                 {certs.map((x: any) => {
                   const info = [x.issuer, x.year].filter(Boolean).join(" · ");
+
                   if (!x.image_url) {
                     return (
                       <article
                         key={x.id}
-                        className="flex aspect-[4/3] flex-col justify-end rounded-3xl border border-edge bg-card p-6"
+                        className="flex aspect-[4/3] min-w-0 flex-col justify-end rounded-xl border border-edge bg-card p-2 sm:rounded-2xl sm:p-4 lg:rounded-3xl lg:p-6"
                       >
-                        <h3 className="font-display text-xl font-semibold leading-snug text-navy">
+                        <h3 className="break-words font-display text-xs font-semibold leading-snug text-navy sm:text-base lg:text-xl">
                           {x.title}
                         </h3>
+
                         {info && (
-                          <p className="mt-1 text-sm text-steel">{info}</p>
+                          <p className="mt-1 text-[9px] text-steel sm:text-xs lg:text-sm">
+                            {info}
+                          </p>
                         )}
                       </article>
                     );
                   }
+
                   return (
                     <article
                       key={x.id}
-                      className="group relative aspect-[4/3] overflow-hidden rounded-3xl border border-edge bg-white shadow-sm transition duration-300 hover:shadow-xl hover:shadow-navy/15"
+                      className="group relative aspect-[4/3] min-w-0 overflow-hidden rounded-xl border border-edge bg-white shadow-sm transition duration-300 hover:shadow-xl hover:shadow-navy/15 sm:rounded-2xl lg:rounded-3xl"
                     >
                       <a
                         href={x.image_url}
@@ -422,21 +475,27 @@ export default async function Home() {
                           className="h-full w-full object-cover object-top transition-transform duration-500 motion-safe:group-hover:scale-105"
                         />
                       </a>
-                      <div className="pointer-events-none absolute inset-0 flex flex-col justify-end bg-linear-to-t from-navy/95 via-navy/60 to-navy/25 p-5 opacity-0 transition-opacity duration-300 group-focus-within:opacity-100 group-hover:opacity-100 [@media(hover:none)]:opacity-100">
-                        <h3 className="line-clamp-3 font-display text-lg font-semibold leading-snug text-white">
+
+                      <div className="pointer-events-none absolute inset-0 flex flex-col justify-end bg-linear-to-t from-navy/95 via-navy/60 to-navy/25 p-2 opacity-0 transition-opacity duration-300 group-focus-within:opacity-100 group-hover:opacity-100 [@media(hover:none)]:opacity-100 sm:p-3 lg:p-5">
+                        <h3 className="line-clamp-3 break-words font-display text-[10px] font-semibold leading-snug text-white sm:text-sm lg:text-lg">
                           {x.title}
                         </h3>
+
                         {info && (
-                          <p className="mt-1 text-sm text-onnavy">{info}</p>
+                          <p className="mt-1 text-[8px] text-onnavy sm:text-xs lg:text-sm">
+                            {info}
+                          </p>
                         )}
-                        <div className="mt-3 flex items-center justify-between gap-3 text-sm font-semibold text-white">
+
+                        <div className="mt-2 flex flex-wrap items-center justify-between gap-1 text-[9px] font-semibold text-white sm:mt-3 sm:text-xs lg:text-sm">
                           <span>View full size ↗</span>
+
                           {x.verify_url && (
                             <a
                               href={x.verify_url}
                               target="_blank"
                               rel="noopener noreferrer"
-                              className="pointer-events-auto inline-flex min-h-11 items-center rounded-full bg-peach px-4 text-navy transition-colors hover:bg-white"
+                              className="pointer-events-auto inline-flex min-h-7 items-center rounded-full bg-peach px-2 text-[9px] text-navy transition-colors hover:bg-white sm:min-h-9 sm:px-3 sm:text-xs lg:min-h-11 lg:px-4 lg:text-sm"
                             >
                               Verify
                             </a>
@@ -454,10 +513,16 @@ export default async function Home() {
 
       <div className={certs.length > 0 ? "bg-mist/60" : "bg-white"}>
         {hasContact && (
-          <section id="kontak" className={`${wrap} scroll-mt-4 pb-4 pt-16 md:pt-24`}>
+          <section
+            id="kontak"
+            className={`${wrap} scroll-mt-4 pb-4 pt-16 md:pt-24`}
+          >
             <Reveal>
               <div className="cta-card relative overflow-hidden rounded-[32px] bg-navy px-6 pt-20 text-center md:px-16 md:pt-28">
-                <div aria-hidden className="pointer-events-none absolute inset-0">
+                <div
+                  aria-hidden
+                  className="pointer-events-none absolute inset-0"
+                >
                   {[0, 2, 4].map((d) => (
                     <span
                       key={d}
@@ -466,14 +531,29 @@ export default async function Home() {
                     />
                   ))}
                   <div className="float-a absolute left-[7%] top-[18%] hidden rounded-2xl border border-white/15 bg-white/10 p-3 backdrop-blur-sm md:block">
-                    <svg viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="white" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+                    <svg
+                      viewBox="0 0 24 24"
+                      width="28"
+                      height="28"
+                      fill="none"
+                      stroke="white"
+                      strokeWidth="1.8"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    >
                       <rect x="3" y="5" width="18" height="14" rx="3" />
                       <path d="M3.5 7.5 12 13l8.5-5.5" />
                     </svg>
                   </div>
                   <div className="float-b absolute right-[7%] top-[46%] hidden rounded-2xl border border-white/15 bg-white/10 p-3 backdrop-blur-sm md:block">
                     <svg viewBox="0 0 80 40" width="72" height="36" fill="none">
-                      <polyline points="2,32 18,22 32,26 48,12 62,16 78,4" stroke="white" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" />
+                      <polyline
+                        points="2,32 18,22 32,26 48,12 62,16 78,4"
+                        stroke="white"
+                        strokeWidth="3"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                      />
                       <circle cx="78" cy="4" r="4" fill="white" />
                     </svg>
                   </div>
@@ -481,7 +561,8 @@ export default async function Home() {
 
                 <div className="relative">
                   <h2 className={`${h2} mx-auto max-w-2xl text-white`}>
-                    {p.contact_title || "Have data that needs to be made clear?"}
+                    {p.contact_title ||
+                      "Have data that needs to be made clear?"}
                   </h2>
                   {p.contact_text && (
                     <p className="mx-auto mt-5 max-w-xl text-lg leading-relaxed text-onnavy">
@@ -490,8 +571,21 @@ export default async function Home() {
                   )}
                   <div className="mt-10 flex flex-wrap justify-center gap-3">
                     {p.email && (
-                      <a href={`mailto:${p.email}`} className={`${whiteBtn} gap-2 break-all`}>
-                        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                      <a
+                        href={`mailto:${p.email}`}
+                        className={`${whiteBtn} gap-2 break-all`}
+                      >
+                        <svg
+                          viewBox="0 0 24 24"
+                          width="18"
+                          height="18"
+                          fill="none"
+                          stroke="currentColor"
+                          strokeWidth="2"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          aria-hidden="true"
+                        >
                           <rect x="3" y="5" width="18" height="14" rx="3" />
                           <path d="M3.5 7.5 12 13l8.5-5.5" />
                         </svg>
@@ -499,9 +593,20 @@ export default async function Home() {
                       </a>
                     )}
                     {social.map(([l, u]) => (
-                      <a key={l} href={u} target="_blank" rel="noopener noreferrer" className={`${ghostBtn} group gap-2`}>
+                      <a
+                        key={l}
+                        href={u}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className={`${ghostBtn} group gap-2`}
+                      >
                         {l}
-                        <span aria-hidden className="transition-transform duration-200 group-hover:-translate-y-0.5 group-hover:translate-x-0.5">↗</span>
+                        <span
+                          aria-hidden
+                          className="transition-transform duration-200 group-hover:-translate-y-0.5 group-hover:translate-x-0.5"
+                        >
+                          ↗
+                        </span>
                       </a>
                     ))}
                   </div>
@@ -535,4 +640,4 @@ export default async function Home() {
       </div>
     </div>
   );
-} 
+}
