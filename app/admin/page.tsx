@@ -7,6 +7,8 @@ import {
 } from "@/app/actions";
 import ThemeToggle from "@/app/ThemeToggle";
 import { ActionForm, ImageField, SubmitButton, Toaster } from "./ui";
+import SortableProjects from "./SortableProjects";
+import { orderProjects } from "@/lib/projectOrder";
 export const dynamic = "force-dynamic";
 
 /* Salin isi file ini ke halaman admin-mu (page.tsx di folder admin). */
@@ -91,13 +93,14 @@ function AddPanel({ label, children }: { label: string; children: React.ReactNod
 /* Satu item daftar. Baris menampilkan ringkasan; tombol Edit membuka form.
    Tombol hapus dipisah di bagian bawah panel, jauh dari tombol Simpan. */
 function Item({
-  table, id, title, subtitle, index, thumb, action, children,
+  table, id, title, subtitle, index, thumb, action, children, bare,
 }: {
   table: string; id: number; title: React.ReactNode; subtitle?: string; index?: number; thumb?: string;
-  action: (fd: FormData) => Promise<void>; children: React.ReactNode;
+  action: (fd: FormData) => Promise<void>; children: React.ReactNode; bare?: boolean;
 }) {
+  const Wrap: "li" | "div" = bare ? "div" : "li";
   return (
-    <li className="mb-3 last:mb-0">
+    <Wrap className={bare ? "min-w-0" : "mb-3 last:mb-0"}>
       <details className="group rounded-2xl border border-edge bg-white transition duration-200 hover:border-steel/30 open:border-steel/40 open:shadow-[0_16px_40px_-24px_rgba(27,47,75,0.3)]">
         <summary className="flex min-h-16 cursor-pointer list-none items-center gap-4 rounded-2xl p-3 pr-4 [&::-webkit-details-marker]:hidden">
           {index !== undefined && (
@@ -139,7 +142,7 @@ function Item({
           </div>
         </div>
       </details>
-    </li>
+    </Wrap>
   );
 }
 
@@ -148,7 +151,7 @@ export default async function Admin() {
   const [prof, skills, projects, exps, hl, certs] = await Promise.all([
     sql`SELECT * FROM profile WHERE id=1`,
     sql`SELECT * FROM skills ORDER BY id`,
-    sql`SELECT * FROM projects ORDER BY (sort_order = 0), sort_order, id DESC`,
+    sql`SELECT * FROM projects`,
     sql`SELECT * FROM experiences ORDER BY id DESC`,
     sql`SELECT * FROM highlights ORDER BY id`,
     sql`SELECT * FROM certificates ORDER BY id DESC`,
@@ -158,6 +161,9 @@ export default async function Admin() {
     contact_title: "", contact_text: "", email: "", github: "", linkedin: "", tableau: "", footer_note: "",
     ...prof[0],
   };
+
+  // urutan projek: sama persis dengan di situs (3 teratas = banner, projek baru di urutan ke-4)
+  const projectsOrdered = orderProjects(projects as any[]);
 
   // keahlian dikelompokkan per kategori, sama seperti di situs
   const byCat = new Map<string, any[]>();
@@ -288,7 +294,7 @@ export default async function Admin() {
           </Card>
 
           {/* ---------------- Projek ---------------- */}
-          <Card id="projek" title="Projek" count={projects.length} hint="Yang terbaru tampil paling awal, kecuali kamu mengatur urutannya. Klik Edit pada sebuah projek untuk mengubahnya.">
+          <Card id="projek" title="Projek" count={projects.length} hint="Klik Edit pada sebuah projek untuk mengubahnya. Urutan diatur dengan menyeret.">
             <AddPanel label="Tambah projek">
               <ActionForm action={addProject} message="Projek ditambahkan." reset collapse className="grid gap-4 md:grid-cols-2">
                 <Field name="title" label="Nama projek" span />
@@ -298,7 +304,8 @@ export default async function Admin() {
                 <Field name="year" label="Tahun" />
                 <Field name="url" label="Link studi kasus" />
                 <Field name="repo" label="Link GitHub projek (opsional)" span hint="Mis. https://github.com/username/nama-repo" />
-                <Field name="sort_order" label="Urutan tampil" hint="1 = paling awal. Kosongkan agar otomatis." />
+                {/* kosong = otomatis masuk di urutan ke-4, tepat di bawah banner */}
+                <input type="hidden" name="sort_order" value="" />
                 <ImageField />
                 <div className="md:col-span-2">
                   <SubmitButton pendingLabel="Menambahkan…">Tambah projek</SubmitButton>
@@ -309,30 +316,33 @@ export default async function Admin() {
             {projects.length === 0 ? (
               <Empty text="Belum ada projek. Klik “Tambah projek” untuk membuat yang pertama." />
             ) : (
-              <ul>
-                {projects.map((x: any, i: number) => (
-                  <Item
-                    key={x.id}
-                    table="projects"
-                    id={x.id}
-                    index={i + 1}
-                    thumb={x.image_url || undefined}
-                    title={x.title}
-                    subtitle={[x.kind, x.year, x.tech].filter(Boolean).join(" · ")}
-                    action={updateProject}
-                  >
-                    <Field name="title" label="Nama projek" value={x.title} span />
-                    <Field name="description" label="Deskripsi" value={x.description} area span />
-                    <Field name="tech" label="Teknologi" value={x.tech} />
-                    <Field name="kind" label="Jenis" value={x.kind} />
-                    <Field name="year" label="Tahun" value={x.year} />
-                    <Field name="url" label="Link studi kasus" value={x.url} />
-                    <Field name="repo" label="Link GitHub projek" value={x.repo} span />
-                    <Field name="sort_order" label="Urutan tampil" value={x.sort_order ? String(x.sort_order) : ""} hint="1 = paling awal. 0 atau kosong = otomatis." />
-                    <ImageField current={x.image_url} />
-                  </Item>
-                ))}
-              </ul>
+              <SortableProjects
+                rows={projectsOrdered.map((x: any) => ({
+                  id: x.id,
+                  node: (
+                    <Item
+                      bare
+                      table="projects"
+                      id={x.id}
+                      thumb={x.image_url || undefined}
+                      title={x.title}
+                      subtitle={[x.kind, x.year, x.tech].filter(Boolean).join(" · ")}
+                      action={updateProject}
+                    >
+                      <Field name="title" label="Nama projek" value={x.title} span />
+                      <Field name="description" label="Deskripsi" value={x.description} area span />
+                      <Field name="tech" label="Teknologi" value={x.tech} />
+                      <Field name="kind" label="Jenis" value={x.kind} />
+                      <Field name="year" label="Tahun" value={x.year} />
+                      <Field name="url" label="Link studi kasus" value={x.url} />
+                      <Field name="repo" label="Link GitHub projek" value={x.repo} span />
+                      {/* urutan dipertahankan; diatur lewat seret, bukan dari form ini */}
+                      <input type="hidden" name="sort_order" defaultValue={x.sort_order ? String(x.sort_order) : ""} />
+                      <ImageField current={x.image_url} />
+                    </Item>
+                  ),
+                }))}
+              />
             )}
           </Card>
 

@@ -1,13 +1,17 @@
 "use client";
 import { useEffect, useRef, useState } from "react";
+import { FEATURED } from "@/lib/projectOrder";
+import Art from "./ProjectArt";
+import FeaturedBanner from "./FeaturedBanner";
+import Reveal from "./Reveal";
 
 type Project = {
   id: number; title: string; description: string; tech: string;
   kind: string; year: string; url: string; repo: string; image_url: string;
 };
 
-const FIRST = 3; // jumlah projek yang tampil di awal
-const STEP = 6; // tambahan setiap klik "View more"
+const FIRST = 0; // kartu tersembunyi dulu; yang tampil di awal hanya banner
+const STEP = 6; // jumlah kartu yang muncul tiap klik
 
 /* Posisi awal tiap kartu (kiri / tengah / kanan) sebelum "mendarat".
    x, y = jarak dari posisi akhir, r = kemiringan. Ubah angkanya untuk efek lebih liar / lebih kalem. */
@@ -16,38 +20,6 @@ const SCATTER = [
   { x: "0vw", y: "240px", r: "3deg" },
   { x: "9vw", y: "150px", r: "7deg" },
 ];
-
-function Art({ i }: { i: number }) {
-  const v = i % 3;
-  const bg = ["bg-navy", "bg-steel", "bg-cream"][v];
-  return (
-    <div className={`${bg} aspect-[16/10]`} aria-hidden>
-      <svg viewBox="0 0 400 200" className="h-full w-full" preserveAspectRatio="xMidYMid slice">
-        {v === 0 && (
-          <>
-            {[50, 80, 60, 110, 90, 130].map((h, k) => (
-              <rect key={k} x={40 + k * 56} y={170 - h} width="34" height={h} rx="6"
-                fill={k === 5 ? "#E9A66B" : "#C3D0E0"} opacity={k === 5 ? 1 : 0.45} />
-            ))}
-            <polyline points="57,95 113,70 169,85 225,45 281,60 337,30" fill="none" stroke="#fff"
-              strokeWidth="3" strokeLinejoin="round" strokeLinecap="round" />
-          </>
-        )}
-        {v === 1 && (
-          <>
-            <path d="M0 150 L60 120 120 132 180 85 240 100 300 55 360 70 400 40 V200 H0Z" fill="#fff" opacity="0.22" />
-            <polyline points="0,150 60,120 120,132 180,85 240,100 300,55 360,70 400,40" fill="none"
-              stroke="#fff" strokeWidth="3" strokeLinejoin="round" />
-          </>
-        )}
-        {v === 2 &&
-          ([[300, "#1B2F4B"], [210, "#2F5D8C"], [130, "#E9A66B"]] as const).map(([w, c], k) => (
-            <rect key={k} x="40" y={40 + k * 46} width={w} height="26" rx="13" fill={c} />
-          ))}
-      </svg>
-    </div>
-  );
-}
 
 function Description({ text }: { text: string }) {
   const ref = useRef<HTMLParagraphElement>(null);
@@ -127,8 +99,16 @@ export default function ProjectList({ projects }: { projects: Project[] }) {
   }, [shown, projects.length]);
 
   const more = () => {
+    const first = shown === 0;
     setFrom(shown);
     setShown((n) => n + STEP);
+    // pertama kali dibuka: gulir halus supaya kartu langsung terlihat
+    if (first) {
+      window.setTimeout(() => {
+        const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+        gridRef.current?.scrollIntoView({ behavior: reduce ? "auto" : "smooth", block: "start" });
+      }, 60);
+    }
   };
 
   const less = () => {
@@ -142,9 +122,22 @@ export default function ProjectList({ projects }: { projects: Project[] }) {
     }, 380);
   };
 
+  const featured = projects.slice(0, FEATURED);
+  const hasMore = projects.length > FEATURED; // kalau projek <= 3, cukup banner saja
+  const remaining = projects.length - shown;
+
   return (
     <>
-      <div ref={gridRef} className="relative grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+      <Reveal once>
+        <FeaturedBanner projects={featured} />
+      </Reveal>
+
+      {hasMore && (
+      <>
+      <div
+        ref={gridRef}
+        className={`relative grid scroll-mt-24 gap-6 md:grid-cols-2 lg:grid-cols-3 ${shown > 0 ? "mt-12" : ""}`}
+      >
         {projects.map((x, i) => {
           const meta = [
             String(x.tech).split(",").map((t) => t.trim()).filter(Boolean).join(", "),
@@ -213,29 +206,31 @@ export default function ProjectList({ projects }: { projects: Project[] }) {
           );
         })}
       </div>
-      {projects.length > FIRST && (
-        <div className="mt-12 flex flex-wrap justify-center gap-3">
-          {shown < projects.length && (
-            <button
-              type="button"
-              onClick={more}
-              disabled={closing}
-              className="inline-flex min-h-11 items-center justify-center rounded-full bg-navy px-8 font-semibold text-white transition duration-200 hover:bg-steel active:scale-[0.97] disabled:opacity-60"
-            >
-              View more
-            </button>
-          )}
-          {shown > FIRST && (
-            <button
-              type="button"
-              onClick={less}
-              disabled={closing}
-              className="inline-flex min-h-11 items-center justify-center rounded-full border border-edge bg-white px-8 font-semibold text-navy transition duration-200 hover:border-navy active:scale-[0.97] disabled:opacity-60"
-            >
-              Show less
-            </button>
-          )}
-        </div>
+      <div className="mt-5 flex flex-wrap justify-center gap-3">
+        {shown < projects.length && (
+          <button
+            type="button"
+            onClick={more}
+            disabled={closing}
+            className="inline-flex min-h-11 items-center justify-center rounded-full bg-navy px-8 font-semibold text-white transition duration-200 hover:bg-steel active:scale-[0.97] disabled:opacity-60"
+          >
+            {shown === 0
+              ? `Browse all projects (${projects.length})`
+              : `Show ${Math.min(STEP, remaining)} more · ${remaining} left`}
+          </button>
+        )}
+        {shown > FIRST && (
+          <button
+            type="button"
+            onClick={less}
+            disabled={closing}
+            className="inline-flex min-h-11 items-center justify-center rounded-full border border-edge bg-white px-8 font-semibold text-navy transition duration-200 hover:border-navy active:scale-[0.97] disabled:opacity-60"
+          >
+            Show less
+          </button>
+        )}
+      </div>
+      </>
       )}
     </>
   );

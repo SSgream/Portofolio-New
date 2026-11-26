@@ -1,11 +1,12 @@
 import { sql } from "@/lib/db";
 import Image from "next/image";
-import ProjectList from "./ProjectList";
-import Reveal from "./Reveal";
-import Intro from "./Intro";
-import HeroTrend from "./HeroTrend";
+import ProjectList from "../components/ProjectList";
+import Reveal from "../components/Reveal";
+import Intro from "../components/Intro";
+import HeroTrend from "../components/HeroTrend";
 import ThemeToggle from "./ThemeToggle";
-import RotatingWord from "./RotatingWord";
+import { orderProjects } from "@/lib/projectOrder";
+import RotatingWord from "../components/RotatingWord";
 export const dynamic = "force-dynamic";
 
 const wrap = "mx-auto w-full max-w-[1200px] px-6";
@@ -22,7 +23,7 @@ export default async function Home() {
   const [prof, skills, projects, exps, hl, certs] = await Promise.all([
     sql`SELECT * FROM profile WHERE id=1`,
     sql`SELECT * FROM skills ORDER BY id`,
-    sql`SELECT * FROM projects ORDER BY (sort_order = 0), sort_order, id DESC`,
+    sql`SELECT * FROM projects`,
     sql`SELECT * FROM experiences ORDER BY id DESC`,
     sql`SELECT * FROM highlights ORDER BY id`,
     sql`SELECT * FROM certificates ORDER BY id DESC`,
@@ -229,16 +230,16 @@ export default async function Home() {
       </div>
 
       {projects.length > 0 && (
-        <section id="projek" className="scroll-mt-4 overflow-x-clip bg-mist py-20 md:py-28">
+        <section id="projek" className="scroll-mt-4 overflow-x-clip bg-mist py-12 md:py-16">
           <div className={wrap}>
             <Reveal>
               <p className="label text-steel">Selected projects</p>
-              <h2 className={`${h2} mb-12 mt-3 max-w-2xl text-navy`}>
+              <h2 className={`${h2} mb-7 mt-2 max-w-2xl text-navy`}>
                 Work that speaks through data.
               </h2>
             </Reveal>
             <ProjectList
-              projects={projects.map((x: any) => ({
+              projects={orderProjects(projects as any[]).map((x: any) => ({
                 id: x.id,
                 title: x.title,
                 description: x.description,
@@ -258,7 +259,7 @@ export default async function Home() {
         <section id="keahlian" className="scroll-mt-4 bg-white">
           <Reveal>
             <div className={`${wrap} py-16 md:py-20`}>
-              <p className="label text-steel">Skills & Technical Tools</p>
+              <p className="label text-steel">Skills</p>
               <dl className="mt-6 divide-y divide-edge">
                 {skillGroups.map(([cat, list]) => (
                   <div
@@ -534,4 +535,4 @@ export default async function Home() {
       </div>
     </div>
   );
-}
+} 

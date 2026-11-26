@@ -472,3 +472,12 @@ input[type="checkbox"], input[type="radio"] { accent-color: #2f5d8c; }
 [data-theme="dark"] .hl-4 { background-color: rgb(250 204 21 / 0.18); }
 
 @media (prefers-reduced-motion: reduce) { .word-wipe { animation: none; } }
+
+/* ===== Banner projek unggulan (FeaturedBanner.tsx) ===== */
+@keyframes seg-fill {
+  from { width: 0%; }
+  to   { width: 100%; }
+}
+.seg-run { animation-name: seg-fill; animation-timing-function: linear; animation-fill-mode: forwards; }
+[data-theme="dark"] .bg-edge { background-color: #243450; }
+@media (prefers-reduced-motion: reduce) { .seg-run { animation: none; width: 100%; } }
