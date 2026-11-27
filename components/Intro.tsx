@@ -1,9 +1,6 @@
 "use client";
 import { useEffect, useRef, useState } from "react";
 
-/* true  = nama dan foto meluncur ke header hanya saat kunjungan pertama dalam satu sesi browser.
-           Setelah itu (misalnya saat refresh), intro tetap tampil lalu memudar langsung ke web.
-   false = selalu meluncur ke header. */
 const FLY_ONLY_FIRST_TIME = true;
 const HOLD = 3300; // ms intro ditampilkan sebelum meluncur / memudar
 const FLY = 1200; // ms durasi peluncuran ke header

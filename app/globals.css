@@ -481,3 +481,48 @@ input[type="checkbox"], input[type="radio"] { accent-color: #2f5d8c; }
 .seg-run { animation-name: seg-fill; animation-timing-function: linear; animation-fill-mode: forwards; }
 [data-theme="dark"] .bg-edge { background-color: #243450; }
 @media (prefers-reduced-motion: reduce) { .seg-run { animation: none; width: 100%; } }
+
+/* 1. Kata sorot hero (mode gelap): latar harus SOLID, bukan transparan.
+      Kalau transparan, kata lama tembus terlihat di bawah kata baru saat sapuan. */
+[data-theme="dark"] .hl-0 { background-color: #25395a; }
+[data-theme="dark"] .hl-1 { background-color: #1f4046; }
+[data-theme="dark"] .hl-2 { background-color: #35325e; }
+[data-theme="dark"] .hl-3 { background-color: #43283f; }
+[data-theme="dark"] .hl-4 { background-color: #3d3a22; }
+
+/* 2. Titik indikator banner projek (mode gelap) */
+[data-theme="dark"] .bg-navy\/20 { background-color: rgb(232 238 247 / 0.28); }
+[data-theme="dark"] .group:hover .group-hover\:bg-navy\/45 { background-color: rgb(232 238 247 / 0.6); }
+
+/* 3. Tombol panah kiri-kanan banner projek (mode gelap) */
+[data-theme="dark"] button[aria-label="Previous project"],
+[data-theme="dark"] button[aria-label="Next project"] {
+  background-color: rgb(22 35 59 / 0.92);
+  border-color: rgb(232 238 247 / 0.28);
+  color: #e8eef7;
+}
+[data-theme="dark"] button[aria-label="Previous project"]:hover,
+[data-theme="dark"] button[aria-label="Next project"]:hover {
+  background-color: #1f3356;
+  border-color: rgb(232 238 247 / 0.5);
+}
+
+/* 4. Warna oranye saat kolom diisi/diklik.
+      Penyebabnya: aturan global `:focus-visible { box-shadow: 0 0 0 5px var(--color-peach) }` di bagian atas globals.css.
+      Diganti dengan ring biru. */
+html :focus-visible { box-shadow: none; }
+html input:focus-visible,
+html textarea:focus-visible,
+html select:focus-visible { box-shadow: 0 0 0 4px rgb(47 93 140 / 0.18); }
+[data-theme="dark"] input:focus-visible,
+[data-theme="dark"] textarea:focus-visible,
+[data-theme="dark"] select:focus-visible { box-shadow: 0 0 0 4px rgb(143 178 218 / 0.28); }
+
+/* Label kecil (mis. "END-TO-END DATA ENGINEERING & ANALYTICS · 2026") terlalu besar di HP,
+   sampai pecah jadi tiga baris. Di layar kecil dikecilkan sedikit. */
+@media (max-width: 640px) {
+  .label {
+    font-size: 12px;
+    letter-spacing: 0.1em;
+  }
+}

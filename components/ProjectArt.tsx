@@ -1,4 +1,4 @@
-/* Ilustrasi pengganti untuk projek yang belum punya gambar (dipakai kartu dan banner). */
+
 export default function Art({ i }: { i: number }) {
   const v = i % 3;
   const bg = ["bg-navy", "bg-steel", "bg-cream"][v];

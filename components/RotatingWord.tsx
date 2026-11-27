@@ -1,12 +1,6 @@
 "use client";
 import { useEffect, useRef, useState } from "react";
 
-/* Kata sorot di judul hero yang berganti-ganti: Clarity → Innovation → Impact → ...
-   - Kata baru "menyapu" dari kiri ke kanan dan menutupi kata lama.
-   - Tiap kata punya warna latar sendiri (kelas hl-0 … hl-4 di globals.css).
-   - Lebar kotak menyesuaikan panjang kata dengan transisi halus.
-   - Tidak berganti bila hanya ada satu kata atau pengguna memilih reduced motion.
-   - Baru mulai berganti setelah intro selesai. */
 const INTERVAL = 4500; // ms tiap kata tampil (termasuk waktu sapuan)
 const SWEEP = 1800; // ms durasi sapuan kata baru (kotak ikut melebar/menyempit selama waktu ini)
 const COLORS = 5;

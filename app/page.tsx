@@ -91,20 +91,23 @@ export default async function Home() {
   return (
     <div className="bg-white">
       <Intro name={p.name} label={p.hero_label} />
-      <header className="sticky top-0 z-50 px-4 pt-4">
-        <div className="mx-auto flex max-w-[1200px] items-center justify-between rounded-full border border-edge bg-white/85 py-2 pl-3 pr-2 shadow-[0_10px_30px_-14px_rgba(27,47,75,0.25)] backdrop-blur-md">
-          <a href="#top" className="flex min-h-11 items-center gap-3 text-navy">
+      <header className="sticky top-0 z-50 px-3 pt-3 sm:px-4 sm:pt-4">
+        <div className="mx-auto flex max-w-[1200px] items-center justify-between gap-2 rounded-full border border-edge bg-white/85 py-2 pl-3 pr-2 shadow-[0_10px_30px_-14px_rgba(27,47,75,0.25)] backdrop-blur-md">
+          <a
+            href="#top"
+            className="flex min-h-11 min-w-0 items-center gap-2.5 text-navy sm:gap-3"
+          >
             <Image
               id="site-avatar"
               src="/fotoselwin.jpeg"
               alt=""
               width={80}
               height={80}
-              className="intro-hide h-10 w-10 rounded-full object-cover"
+              className="intro-hide h-10 w-10 shrink-0 rounded-full object-cover"
             />
             <span
               id="site-name"
-              className="intro-hide font-display text-lg font-semibold"
+              className="intro-hide whitespace-nowrap font-display text-base font-semibold sm:text-lg"
             >
               {p.name}
             </span>
@@ -126,10 +129,10 @@ export default async function Home() {
             )}
             <ThemeToggle className="ml-1" />
           </nav>
-          <div className="flex items-center gap-2 md:hidden">
+          <div className="flex shrink-0 items-center gap-1.5 md:hidden">
             <ThemeToggle />
             <details className="relative">
-              <summary className="flex min-h-11 cursor-pointer list-none items-center rounded-full border border-edge px-5 font-semibold text-navy">
+              <summary className="flex min-h-11 cursor-pointer list-none items-center rounded-full border border-edge px-4 font-semibold text-navy">
                 Menu
               </summary>
               <div className="absolute right-0 top-14 z-20 flex w-56 flex-col rounded-3xl border border-edge bg-card p-3 font-medium text-navy shadow-lg">
@@ -159,9 +162,11 @@ export default async function Home() {
         </div>
         <section
           id="top"
-          className={`${wrap} relative grid scroll-mt-4 items-center gap-12 pb-20 pt-12 md:grid-cols-[1.1fr_0.9fr] md:gap-16 md:pb-28 md:pt-20`}
+          className={`${wrap} relative grid scroll-mt-4 items-center gap-y-6 pb-16 pt-8 md:grid-cols-[1.1fr_0.9fr] md:gap-16 md:pb-28 md:pt-20`}
         >
-          <div>
+          {/* HP: judul → foto → deskripsi → tombol. Desktop: teks di kiri, foto di kanan. */}
+          <div className="contents md:block">
+            <div className="order-1 md:order-none">
             {p.hero_label && (
               <p
                 className="rise label text-steel"
@@ -184,16 +189,17 @@ export default async function Home() {
                 p.headline
               )}
             </h1>
+            </div>
             {p.bio && (
               <p
-                className="rise mt-6 max-w-xl whitespace-pre-line text-lg leading-relaxed"
+                className="rise order-3 max-w-xl whitespace-pre-line text-lg leading-relaxed md:order-none md:mt-6"
                 style={{ "--d": "0.2s" } as React.CSSProperties}
               >
                 {p.bio}
               </p>
             )}
             <div
-              className="rise mt-9 flex flex-wrap gap-3"
+              className="rise order-4 mt-2 flex flex-wrap gap-3 md:order-none md:mt-9"
               style={{ "--d": "0.3s" } as React.CSSProperties}
             >
               {projects.length > 0 && (
@@ -209,7 +215,7 @@ export default async function Home() {
             </div>
           </div>
           <div
-            className="rise relative"
+            className="rise relative order-2 md:order-none"
             style={{ "--d": "0.25s", "--rot": "4deg" } as React.CSSProperties}
           >
             <div
@@ -253,7 +259,7 @@ export default async function Home() {
                 width={1600}
                 height={1000}
                 priority
-                className="h-auto w-full rounded-3xl"
+                className="aspect-[4/3] h-auto w-full rounded-3xl object-cover object-top md:aspect-auto"
               />
             </div>
           </div>
@@ -292,7 +298,7 @@ export default async function Home() {
       {skills.length > 0 && (
         <section id="keahlian" className="scroll-mt-4 bg-white">
           <Reveal>
-            <div className={`${wrap} py-16 md:py-20`}>
+            <div className={`${wrap} py-12 md:py-20`}>
               <p className="label text-steel">Skills & Technical Tools</p>
               <dl className="mt-6 divide-y divide-edge">
                 {skillGroups.map(([cat, list]) => (
@@ -325,7 +331,7 @@ export default async function Home() {
         <div className="bg-mist/60">
           <section
             id="tentang"
-            className={`${wrap} grid scroll-mt-4 gap-10 py-20 md:grid-cols-[5fr_7fr] md:gap-16 md:py-28`}
+            className={`${wrap} grid scroll-mt-4 gap-8 py-12 md:grid-cols-[5fr_7fr] md:gap-16 md:py-28`}
           >
             <div className="md:sticky md:top-28 md:self-start">
               <p className="label text-steel">About</p>
@@ -422,7 +428,7 @@ export default async function Home() {
       {certs.length > 0 && (
         <section
           id="sertifikat"
-          className="scroll-mt-4 bg-white py-20 md:py-28"
+          className="scroll-mt-4 bg-white py-12 md:py-28"
         >
           <div className={wrap}>
             <Reveal>
@@ -432,7 +438,8 @@ export default async function Home() {
                 Continuous learning.
               </h2>
 
-              <div className="grid grid-cols-3 gap-2 sm:gap-4 lg:gap-6">
+              {/* HP: 2 kolom, keterangan di bawah gambar. Layar >= sm: 3 kolom, keterangan muncul saat hover. */}
+              <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 sm:gap-4 lg:gap-6">
                 {certs.map((x: any) => {
                   const info = [x.issuer, x.year].filter(Boolean).join(" · ");
 
@@ -440,14 +447,14 @@ export default async function Home() {
                     return (
                       <article
                         key={x.id}
-                        className="flex aspect-[4/3] min-w-0 flex-col justify-end rounded-xl border border-edge bg-card p-2 sm:rounded-2xl sm:p-4 lg:rounded-3xl lg:p-6"
+                        className="flex aspect-[4/3] min-w-0 flex-col justify-end rounded-2xl border border-edge bg-card p-4 lg:rounded-3xl lg:p-6"
                       >
-                        <h3 className="break-words font-display text-xs font-semibold leading-snug text-navy sm:text-base lg:text-xl">
+                        <h3 className="break-words font-display text-sm font-semibold leading-snug text-navy sm:text-base lg:text-xl">
                           {x.title}
                         </h3>
 
                         {info && (
-                          <p className="mt-1 text-[9px] text-steel sm:text-xs lg:text-sm">
+                          <p className="mt-1 text-xs text-steel lg:text-sm">
                             {info}
                           </p>
                         )}
@@ -456,48 +463,78 @@ export default async function Home() {
                   }
 
                   return (
-                    <article
-                      key={x.id}
-                      className="group relative aspect-[4/3] min-w-0 overflow-hidden rounded-xl border border-edge bg-white shadow-sm transition duration-300 hover:shadow-xl hover:shadow-navy/15 sm:rounded-2xl lg:rounded-3xl"
-                    >
-                      <a
-                        href={x.image_url}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        aria-label={`Open ${x.title} certificate in full size`}
-                        className="block h-full w-full"
-                      >
-                        {/* eslint-disable-next-line @next/next/no-img-element */}
-                        <img
-                          src={x.image_url}
-                          alt={`${x.title} certificate`}
-                          loading="lazy"
-                          className="h-full w-full object-cover object-top transition-transform duration-500 motion-safe:group-hover:scale-105"
-                        />
-                      </a>
+                    <article key={x.id} className="group min-w-0">
+                      <div className="relative aspect-[4/3] overflow-hidden rounded-2xl border border-edge bg-white shadow-sm transition duration-300 hover:shadow-xl hover:shadow-navy/15 lg:rounded-3xl">
+                        <a
+                          href={x.image_url}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          aria-label={`Open ${x.title} certificate in full size`}
+                          className="block h-full w-full"
+                        >
+                          {/* eslint-disable-next-line @next/next/no-img-element */}
+                          <img
+                            src={x.image_url}
+                            alt={`${x.title} certificate`}
+                            loading="lazy"
+                            className="h-full w-full object-cover object-top transition-transform duration-500 motion-safe:group-hover:scale-105"
+                          />
+                        </a>
 
-                      <div className="pointer-events-none absolute inset-0 flex flex-col justify-end bg-linear-to-t from-navy/95 via-navy/60 to-navy/25 p-2 opacity-0 transition-opacity duration-300 group-focus-within:opacity-100 group-hover:opacity-100 [@media(hover:none)]:opacity-100 sm:p-3 lg:p-5">
-                        <h3 className="line-clamp-3 break-words font-display text-[10px] font-semibold leading-snug text-white sm:text-sm lg:text-lg">
+                        {/* Hanya layar >= sm */}
+                        <div className="pointer-events-none absolute inset-0 hidden flex-col justify-end bg-linear-to-t from-navy/95 via-navy/60 to-navy/25 p-3 opacity-0 transition-opacity duration-300 group-focus-within:opacity-100 group-hover:opacity-100 sm:flex [@media(hover:none)]:opacity-100 lg:p-5">
+                          <h3 className="line-clamp-3 break-words font-display text-sm font-semibold leading-snug text-white lg:text-lg">
+                            {x.title}
+                          </h3>
+
+                          {info && (
+                            <p className="mt-1 text-xs text-onnavy lg:text-sm">
+                              {info}
+                            </p>
+                          )}
+
+                          <div className="mt-3 flex flex-wrap items-center justify-between gap-1 text-xs font-semibold text-white lg:text-sm">
+                            <span>View full size ↗</span>
+
+                            {x.verify_url && (
+                              <a
+                                href={x.verify_url}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="pointer-events-auto inline-flex min-h-9 items-center rounded-full bg-peach px-3 text-xs text-navy transition-colors hover:bg-white lg:min-h-11 lg:px-4 lg:text-sm"
+                              >
+                                Verify
+                              </a>
+                            )}
+                          </div>
+                        </div>
+                      </div>
+
+                      {/* Hanya HP: keterangan di bawah gambar */}
+                      <div className="mt-2.5 sm:hidden">
+                        <h3 className="line-clamp-2 text-sm font-semibold leading-snug text-navy">
                           {x.title}
                         </h3>
-
                         {info && (
-                          <p className="mt-1 text-[8px] text-onnavy sm:text-xs lg:text-sm">
-                            {info}
-                          </p>
+                          <p className="mt-0.5 text-xs text-steel">{info}</p>
                         )}
-
-                        <div className="mt-2 flex flex-wrap items-center justify-between gap-1 text-[9px] font-semibold text-white sm:mt-3 sm:text-xs lg:text-sm">
-                          <span>View full size ↗</span>
-
+                        <div className="mt-1 flex flex-wrap gap-x-4 text-xs font-semibold">
+                          <a
+                            href={x.image_url}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="inline-flex min-h-9 items-center text-steel hover:underline"
+                          >
+                            View ↗
+                          </a>
                           {x.verify_url && (
                             <a
                               href={x.verify_url}
                               target="_blank"
                               rel="noopener noreferrer"
-                              className="pointer-events-auto inline-flex min-h-7 items-center rounded-full bg-peach px-2 text-[9px] text-navy transition-colors hover:bg-white sm:min-h-9 sm:px-3 sm:text-xs lg:min-h-11 lg:px-4 lg:text-sm"
+                              className="inline-flex min-h-9 items-center text-steel hover:underline"
                             >
-                              Verify
+                              Verify ↗
                             </a>
                           )}
                         </div>
@@ -515,10 +552,10 @@ export default async function Home() {
         {hasContact && (
           <section
             id="kontak"
-            className={`${wrap} scroll-mt-4 pb-4 pt-16 md:pt-24`}
+            className={`${wrap} scroll-mt-4 pb-4 pt-12 md:pt-24`}
           >
             <Reveal>
-              <div className="cta-card relative overflow-hidden rounded-[32px] bg-navy px-6 pt-20 text-center md:px-16 md:pt-28">
+              <div className="cta-card relative overflow-hidden rounded-[32px] bg-navy px-5 pt-14 text-center md:px-16 md:pt-28">
                 <div
                   aria-hidden
                   className="pointer-events-none absolute inset-0"
@@ -569,7 +606,8 @@ export default async function Home() {
                       {p.contact_text}
                     </p>
                   )}
-                  <div className="mt-10 flex flex-wrap justify-center gap-3">
+                  {/* HP: tombol tersusun rapi selebar kartu. Layar >= sm: berjajar di tengah. */}
+                  <div className="mt-8 flex flex-col items-stretch gap-3 sm:mt-10 sm:flex-row sm:flex-wrap sm:items-center sm:justify-center">
                     {p.email && (
                       <a
                         href={`mailto:${p.email}`}
@@ -614,7 +652,7 @@ export default async function Home() {
                   {skills.length > 0 && (
                     <div
                       aria-hidden
-                      className="mt-20 overflow-hidden border-t border-white/10 py-6 [mask-image:linear-gradient(90deg,transparent,#000_12%,#000_88%,transparent)]"
+                      className="mt-12 overflow-hidden border-t border-white/10 py-6 md:mt-20 [mask-image:linear-gradient(90deg,transparent,#000_12%,#000_88%,transparent)]"
                     >
                       <div className="marquee flex w-max">
                         {[...skills, ...skills].map((s: any, i: number) => (

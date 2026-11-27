@@ -13,8 +13,6 @@ type Project = {
 const FIRST = 0; // kartu tersembunyi dulu; yang tampil di awal hanya banner
 const STEP = 6; // jumlah kartu yang muncul tiap klik
 
-/* Posisi awal tiap kartu (kiri / tengah / kanan) sebelum "mendarat".
-   x, y = jarak dari posisi akhir, r = kemiringan. Ubah angkanya untuk efek lebih liar / lebih kalem. */
 const SCATTER = [
   { x: "-9vw", y: "150px", r: "-7deg" },
   { x: "0vw", y: "240px", r: "3deg" },

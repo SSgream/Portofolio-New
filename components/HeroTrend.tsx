@@ -61,7 +61,7 @@ export default function HeroTrend() {
 
   return (
     <svg
-      className="absolute inset-x-0 bottom-0 h-3/5 w-full"
+      className="absolute inset-x-0 bottom-0 h-24 w-full sm:h-40 md:h-3/5"
       viewBox="0 0 1200 300"
       preserveAspectRatio="none"
     >

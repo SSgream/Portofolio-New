@@ -1,8 +1,6 @@
 "use client";
 import { useEffect, useRef, useState } from "react";
 
-/* Konten memudar naik setiap kali masuk layar.
-   Pakai <Reveal once> kalau ingin efeknya hanya berjalan satu kali. */
 export default function Reveal({
   children,
   className = "",
